@@ -1,9 +1,12 @@
 from fastapi import FastAPI
-from routes.index import router  # Import the router object explicitly
+from routes.index import router as index_router 
+from routes.agent import router as agent_router 
+
 
 app = FastAPI()
 
-app.include_router(router)  
+app.include_router(index_router)
+app.include_router(agent_router)
 
 
 def main():
