@@ -1,6 +1,35 @@
+## Install or add required dependencies using uv 
+```bash 
+uv sync
+```
 
 ### set anthropic api key in your terminal environment
+```bash
 set ANTHROPIC_API_KEY=<your-key>
+```
+
+## Create .env file
+- add required environment variables from ```.env.template``` file
+
 
 ### run app 
+```bash
 uvicorn main:app --reload
+```
+
+
+## Example
+
+send post request on ```/agent``` route with below request body 
+
+```json 
+{
+  "prompt" : "User promt/query",
+  "user_email" : "recipent_email@example.com" 
+}
+```
+
+You should recieve response as pdf on email given in ```user_email```.
+
+
+
