@@ -12,3 +12,8 @@ dependencies = [
     "uvicorn>=0.34.2",
     "yfinance>=0.2.59",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest-mock>=3.14.0",
+]
