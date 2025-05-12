@@ -2,6 +2,7 @@ from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
 from agno.tools.reasoning import ReasoningTools
 from agno.tools.yfinance import YFinanceTools
+from setting import settings
 
 
 tools=[
@@ -21,7 +22,7 @@ instructions=[
 class AgentService:
     def __init__(self, model_id='claude-3-7-sonnet-latest', tools=tools, instructions=instructions, markdown=True):
         self.agent = Agent(
-            model=Claude(id=model_id),
+            model=Claude(id=model_id, api_key=settings.ANTHROPIC_API_KEY,),
             tools=tools,
             instructions=instructions,
             markdown=markdown,
