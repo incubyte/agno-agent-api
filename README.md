@@ -31,5 +31,13 @@ send post request on ```/agent``` route with below request body
 
 You should recieve response as pdf on email given in ```user_email```.
 
+### request sent on ```/agent``` route
+![image](https://github.com/user-attachments/assets/e731fe94-96b1-421e-b3b0-d876ceb894c8)
+
+### received response on email with attached pdf
+![image](https://github.com/user-attachments/assets/f265240b-8329-4452-8c0a-82fa3b2dae25)
+
+
+
 
 
