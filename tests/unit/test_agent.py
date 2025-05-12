@@ -17,3 +17,12 @@ def test_run_agent():
     response = client.post("/agent", json=payload)
     assert response.status_code == 200
     assert response.json() == {"response": "Mocked response to: Hello agent!"}
+
+def test_run_agent_empty_prompt_throw_error():
+    payload = {"prompt": ""}
+    response = client.post("/agent", json=payload)
+    assert response.status_code == 401
+    assert response.json() == {
+        "detail": "prompt must not be empty"
+    }
+
