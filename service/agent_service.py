@@ -1,9 +1,25 @@
 from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
+from agno.tools.reasoning import ReasoningTools
+from agno.tools.yfinance import YFinanceTools
 
+
+tools=[
+        ReasoningTools(add_instructions=True),
+        YFinanceTools(
+            stock_price=True,
+            analyst_recommendations=True,
+            company_info=True,
+            company_news=True,
+        ),
+    ]
+instructions=[
+    "Use tables to display data",
+    "Only output the report, no other text",
+]
 
 class AgentService:
-    def __init__(self, model_id, tools, instructions, markdown=True):
+    def __init__(self, model_id='claude-3-7-sonnet-latest', tools=tools, instructions=instructions, markdown=True):
         self.agent = Agent(
             model=Claude(id=model_id),
             tools=tools,
