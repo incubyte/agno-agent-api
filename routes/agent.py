@@ -28,4 +28,4 @@ class AgentRouter:
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
         self.pdf_service.save_pdf_file()
-        return {"response": response}
+        return {"response": clean_response}
