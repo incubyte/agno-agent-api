@@ -28,7 +28,6 @@ class EmailService:
         msg['To'] = to_email
         msg['Subject'] = subject
 
-        # Create the HTML part
         html_body = f"""
         <html>
         <body>
@@ -40,7 +39,6 @@ class EmailService:
 
         msg.attach(MIMEText(html_body, 'html'))
 
-        # Attach logo if provided
         if logo_path and os.path.isfile(logo_path):
             with open(logo_path, 'rb') as img:
                 mime_image = MIMEImage(img.read())
@@ -48,7 +46,6 @@ class EmailService:
                 msg.attach(mime_image)
             print("Logo attached.")
 
-        # Attach PDF if provided
         if pdf_path and os.path.isfile(pdf_path):
             with open(pdf_path, 'rb') as pdf_file:
                 pdf_attachment = MIMEApplication(pdf_file.read(), _subtype="pdf")
@@ -60,7 +57,6 @@ class EmailService:
                 msg.attach(pdf_attachment)
             print("PDF attached.")
 
-        # Send the email
         self.server.send_message(msg)
         print(f"Email sent to {to_email}.")
 
