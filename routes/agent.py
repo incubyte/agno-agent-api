@@ -21,12 +21,14 @@ class AgentRouter:
 
     agent_service: AgentService = Depends(AgentService)
     pdf_service: PdfService = Depends(PdfService)
-    email_service: EmailService = Depends(EmailService)
+    email_service: EmailService = Depends(EmailService)  
 
     @router.post("/agent")
     def run_agent(self, request: AgentRequest):
         if not request.prompt:
-            raise HTTPException(status_code=401, detail="prompt must not be empty")
+            raise HTTPException(status_code=400, detail="prompt must not be empty")
+        if not request.user_email:
+            raise HTTPException(status_code=400, detail="user_email must not be empty")
         response = self.agent_service.generate_response(request.prompt)
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
