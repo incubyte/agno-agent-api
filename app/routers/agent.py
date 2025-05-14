@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from service.agent_service  import AgentService
+from service  import AgentService
 from fastapi import HTTPException
 
 from pydantic import BaseModel
 from fastapi_utils.cbv import cbv
-from service.pdf_service import PdfService
-from service.email_service import EmailService
+from service import PdfService
+from service import EmailService
 import textwrap
 
 
@@ -29,7 +29,7 @@ class AgentRouter:
             raise HTTPException(status_code=400, detail="prompt must not be empty")
         if not request.user_email:
             raise HTTPException(status_code=400, detail="user_email must not be empty")
-        response = self.agent_service.generate_response(request.prompt)
+        response = self.agent_service.generate_response(request.prompt)        
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
         self.pdf_service.save_pdf_file()
@@ -46,5 +46,4 @@ class AgentRouter:
         except Exception as e:
             print(f"Failed to send email: {e}")
             raise HTTPException(status_code=500, detail="Failed to send email")
-
         return {"response": clean_response}
