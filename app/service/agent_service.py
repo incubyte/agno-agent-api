@@ -2,7 +2,7 @@ from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
 from agno.tools.reasoning import ReasoningTools
 from agno.tools.yfinance import YFinanceTools
-from core import settings
+from app.core import settings
 
 
 tools=[
