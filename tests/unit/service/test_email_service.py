@@ -7,11 +7,9 @@ import importlib.util
 sys.modules['core'] = MagicMock()
 sys.modules['core.settings'] = MagicMock()
 
-# Mock the app modules to avoid circular imports
 sys.modules['app.main'] = MagicMock()
 sys.modules['app.core'] = MagicMock()
 sys.modules['app.service.agent_service'] = MagicMock()
-# Import EmailService using importlib.util to properly locate the module
 spec = importlib.util.spec_from_file_location(
     "email_service",
     os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../app/service/email_service.py'))

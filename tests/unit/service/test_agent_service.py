@@ -4,21 +4,17 @@ import sys
 import importlib.util
 from unittest.mock import MagicMock, patch, ANY
 
-# Mock all the necessary modules before they are imported
 sys.modules['routers'] = MagicMock()
 sys.modules['routers.index_router'] = MagicMock()
 sys.modules['routers.agent'] = MagicMock()
 sys.modules['core'] = MagicMock()
 sys.modules['core.settings'] = MagicMock()
 
-# Mock the app modules to avoid circular imports
 sys.modules['app.main'] = MagicMock()
 sys.modules['app.core'] = MagicMock()
 
-# Add the project root to the Python path to resolve imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-# Import agent_service module using importlib.util
 spec = importlib.util.spec_from_file_location(
     "agent_service",
     os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../app/service/agent_service.py'))
@@ -26,7 +22,6 @@ spec = importlib.util.spec_from_file_location(
 agent_service_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(agent_service_module)
 
-# Get the module components we need for testing
 AgentService = agent_service_module.AgentService
 tools = agent_service_module.tools
 instructions = agent_service_module.instructions

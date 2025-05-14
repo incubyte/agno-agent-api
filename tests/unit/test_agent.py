@@ -4,8 +4,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
-
-# Define simple service classes
 class AgentService:
     def generate_response(self, prompt: str) -> str:
         return f"Mocked response to: {prompt}"
