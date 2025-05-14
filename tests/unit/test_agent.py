@@ -1,9 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
-from service.agent_service import AgentService
-from service.pdf_service import PdfService
-from service.email_service import EmailService
-from main import app
+from app.service import AgentService
+from app.service import PdfService
+from app.service import EmailService
+from app.main import app
 
 
 class MockAgentService:

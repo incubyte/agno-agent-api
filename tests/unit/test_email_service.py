@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch, ANY
 import os
-from service.email_service import EmailService
+from app.service import EmailService
 
 
 class TestEmailService:
@@ -12,16 +12,16 @@ class TestEmailService:
         self.mock_port = 123
         self.mock_sender_email = "test@example.com"
         self.mock_sender_password = "test_password"
-        
-        with patch('service.email_service.smtplib.SMTP'):
+
+        with patch('app.service.email_service.smtplib.SMTP'):
             self.email_service = EmailService(
                 smtp_server=self.mock_smtp_server,
                 smtp_port=self.mock_port,
                 sender_email=self.mock_sender_email,
                 sender_password=self.mock_sender_password
             )
-    
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_init(self, mock_smtp):
         """Test that EmailService initializes with correct parameters"""
         email_service = EmailService(
@@ -36,8 +36,8 @@ class TestEmailService:
         assert email_service.sender_email == self.mock_sender_email
         assert email_service.sender_password == self.mock_sender_password
         assert email_service.server is None
-    
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_connect(self, mock_smtp):
         """Test connect method establishes connection and logs in"""
         mock_smtp_instance = MagicMock()
@@ -53,10 +53,10 @@ class TestEmailService:
         )
         
         assert self.email_service.server == mock_smtp_instance
-    
-    @patch('service.email_service.os.path.isfile')
-    @patch('service.email_service.open')
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.os.path.isfile')
+    @patch('app.service.email_service.open')
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_send_email_basic(self, mock_smtp, mock_open, mock_isfile):
         """Test sending a basic email without attachments"""
         mock_smtp_instance = MagicMock()
@@ -79,11 +79,11 @@ class TestEmailService:
         
         mock_isfile.assert_not_called()
         mock_open.assert_not_called()
-    
-    @patch('service.email_service.os.path.isfile')
-    @patch('service.email_service.open')
-    @patch('service.email_service.MIMEImage')
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.os.path.isfile')
+    @patch('app.service.email_service.open')
+    @patch('app.service.email_service.MIMEImage')
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_send_email_with_logo(self, mock_smtp, mock_mime_image, mock_open, mock_isfile):
         """Test sending an email with a logo attachment"""
         mock_smtp_instance = MagicMock()
@@ -112,11 +112,11 @@ class TestEmailService:
         
         mock_mime_image.assert_called_once()
         mock_mime_image_instance.add_header.assert_called_with('Content-ID', '<logo>')
-    
-    @patch('service.email_service.os.path.isfile')
-    @patch('service.email_service.open')
-    @patch('service.email_service.MIMEApplication')
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.os.path.isfile')
+    @patch('app.service.email_service.open')
+    @patch('app.service.email_service.MIMEApplication')
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_send_email_with_pdf(self, mock_smtp, mock_mime_app, mock_open, mock_isfile):
         """Test sending an email with a PDF attachment"""
         mock_smtp_instance = MagicMock()
@@ -150,13 +150,13 @@ class TestEmailService:
             'attachment',
             filename=ANY
         )
-    
-    @patch('service.email_service.os.path.isfile')
-    @patch('service.email_service.open')
-    @patch('service.email_service.MIMEImage')
-    @patch('service.email_service.MIMEApplication')
-    @patch('service.email_service.smtplib.SMTP')
-    def test_send_email_with_both_attachments(self, mock_smtp, mock_mime_app, mock_mime_image, 
+
+    @patch('app.service.email_service.os.path.isfile')
+    @patch('app.service.email_service.open')
+    @patch('app.service.email_service.MIMEImage')
+    @patch('app.service.email_service.MIMEApplication')
+    @patch('app.service.email_service.smtplib.SMTP')
+    def test_send_email_with_both_attachments(self, mock_smtp, mock_mime_app, mock_mime_image,
                                             mock_open, mock_isfile):
         """Test sending an email with both logo and PDF attachments"""
         mock_smtp_instance = MagicMock()
@@ -188,8 +188,8 @@ class TestEmailService:
         assert mock_open.call_count >= 2
         mock_mime_image.assert_called_once()
         mock_mime_app.assert_called_once()
-    
-    @patch('service.email_service.smtplib.SMTP')
+
+    @patch('app.service.email_service.smtplib.SMTP')
     def test_disconnect(self, mock_smtp):
         """Test disconnect method closes the connection"""
         mock_smtp_instance = MagicMock()
