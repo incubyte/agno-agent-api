@@ -1,12 +1,12 @@
 import pytest
 from unittest.mock import MagicMock, patch, ANY
-from service.agent_service import AgentService, tools, instructions
+from app.service import AgentService, tools, instructions
 
 
 class TestAgentService:
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+
+    @patch('app.service.agent_service.Agent')
+    @patch('app.service.agent_service.Claude')
     def test_init(self, mock_claude, mock_agent):
         """Test that AgentService initializes with correct parameters"""
         mock_claude_instance = MagicMock()
@@ -21,9 +21,9 @@ class TestAgentService:
             instructions=instructions,
             markdown=True
         )
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+
+    @patch('app.service.agent_service.Agent')
+    @patch('app.service.agent_service.Claude')
     def test_init_with_custom_params(self, mock_claude, mock_agent):
         """Test that AgentService initializes with custom parameters"""
 
@@ -49,9 +49,9 @@ class TestAgentService:
             instructions=custom_instructions,
             markdown=False
         )
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+
+    @patch('app.service.agent_service.Agent')
+    @patch('app.service.agent_service.Claude')
     def test_generate_response(self, mock_claude, mock_agent):
         """Test generate_response method returns expected content"""
         mock_claude_instance = MagicMock()
@@ -74,9 +74,9 @@ class TestAgentService:
             markdown=True
         )
         assert result == "Test response content"
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+
+    @patch('app.service.agent_service.Agent')
+    @patch('app.service.agent_service.Claude')
     def test_generate_response_with_markdown_disabled(self, mock_claude, mock_agent):
         """Test generate_response method with markdown disabled"""
         mock_claude_instance = MagicMock()
