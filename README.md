@@ -14,7 +14,7 @@ set ANTHROPIC_API_KEY=<your-key>
 
 ### run app 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 
