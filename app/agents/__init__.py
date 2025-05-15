@@ -1,6 +1,5 @@
-from .marketing_agents import review_marketing_website, run_marketing_agent
+from .marketing_agents import MarketingAgent
 
 __all__ = [
-    "review_marketing_website",
-    "run_marketing_agent",
+    "MarketingAgent"
 ]

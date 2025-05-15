@@ -8,7 +8,7 @@ from app.core import settings
 from agno.utils.pprint import pprint_run_response
 import os
 
-class MarketingAgents:
+class MarketingAgent:
     def __init__(self):
         storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
         storage_dir = os.path.abspath(storage_dir)
@@ -17,7 +17,7 @@ class MarketingAgents:
 
     # Factory methods for creating individual agents
     def create_website_analyzer_agent(self):
-        return MarketingAgent(
+        return Agent(
             name="Website Analyzer Agent",
             role="You are an expert at analyzing website structure, performance, and technical SEO elements",
             model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
@@ -359,27 +359,18 @@ class MarketingAgents:
         try:
             print(f"Running marketing website team for URL: {url}")
             print(self.marketing_website_team)
-            response: Iterator[RunResponse] = self.marketing_website_team.run(prompt)
+            response_stream : Iterator[RunResponse] = self.marketing_website_team.run(prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
             pprint_run_response(response, markdown=True)
             print("Marketing website team completed successfully.")
-            return response.content
+            with open("marketing_website_report.md", "w") as f:
+                f.write(content)
+            return content
         except Exception as e:
             print(f"Error running marketing website team: {e}")
             return f"# Error: {e}"
 
     def run_marketing_agent(self, url: str) -> str:
         return self.review_marketing_website(url)
-
-# For backward compatibility, you can expose the main function as before:
-def run_marketing_agent(url: str) -> str:
-    return MarketingAgents().run_marketing_agent(url)
-
-# If you want to keep the old function name for review_marketing_website:
-def review_marketing_website(url):
-    return MarketingAgents().review_marketing_website(url)
-
-# If MarketingAgent is a subclass of Agent, import it, otherwise use Agent directly.
-try:
-    from agno.agent import MarketingAgent
-except ImportError:
-    MarketingAgent = Agent

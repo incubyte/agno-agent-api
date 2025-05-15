@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi_utils.cbv import cbv
 from app.service import PdfService
 from app.service import EmailService
-from app.agents.marketing_agents import  run_marketing_agent
+from app.agents.marketing_agents import MarketingAgent
 import textwrap
 
 
@@ -29,6 +29,7 @@ class AgentRouter:
     agent_service: AgentService = Depends(AgentService)
     pdf_service: PdfService = Depends(PdfService)
     email_service: EmailService = Depends(EmailService)  
+    marketing_agent: MarketingAgent = Depends(MarketingAgent)
 
     @router.post("/agent")
     def run_agent(self, request: AgentRequest):
@@ -63,9 +64,8 @@ class AgentRouter:
             raise HTTPException(status_code=400, detail="url must not be empty")
         if not request.user_email:
             raise HTTPException(status_code=400, detail="user_email must not be empty")
-        print(f"URL: {request.url}")
-        print(f"User Email: {request.user_email}")
-        response = run_marketing_agent(request.url)
+        marketing_agent = MarketingAgent()
+        response = marketing_agent.run_marketing_agent(request.url)
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
         self.pdf_service.save_pdf_file()
