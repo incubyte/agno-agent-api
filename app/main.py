@@ -1,6 +1,15 @@
 from fastapi import FastAPI
-from routers import index_router
-from routers import agent_router
+from app.routers import index_router
+from app.routers import agent_router
+
+
+
+import asyncio
+import sys
+
+if sys.platform == "win32":
+    print(sys.platform)
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 
 app = FastAPI()
