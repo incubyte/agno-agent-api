@@ -10,10 +10,10 @@ import os
 
 class MarketingAgent:
     def __init__(self):
-        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
-        storage_dir = os.path.abspath(storage_dir)
-        self.AGENT_STORAGE = os.path.join(storage_dir, settings.AGENT_STORAGE)
+        self.AGENT_STORAGE = settings.AGENT_STORAGE
+        print(self.AGENT_STORAGE)
         self.marketing_website_team = self._create_marketing_website_team()
+
 
     # Factory methods for creating individual agents
     def create_website_analyzer_agent(self):
@@ -365,8 +365,6 @@ class MarketingAgent:
                 content += response.content
             pprint_run_response(response, markdown=True)
             print("Marketing website team completed successfully.")
-            with open("marketing_website_report.md", "w") as f:
-                f.write(content)
             return content
         except Exception as e:
             print(f"Error running marketing website team: {e}")
