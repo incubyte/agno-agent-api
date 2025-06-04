@@ -1,0 +1,329 @@
+{
+  "homepage_sections": [
+    {
+      "section_name": "Above the Fold",
+      "section_description": "Immediately state your value, establish credibility, and provide a clear path to conversion. This section must communicate what you do and why it matters within seconds of page load.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Headline and Subheadline",
+          "sub_section_description": "Immediately state what you do and the core benefit, using industry-specific language that clarifies your niche in the AI space.",
+          "prompts": [
+            {
+              "id": "atf_1",
+              "title": "Crystal-Clear UVP",
+              "prompt_text": "Write an 8-word headline & 18-word subhead that answers 'What, for whom, why?' using the brief below. Include a single outcome-led CTA."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Social Proof",
+          "sub_section_description": "Add recognizable client logos, awards, or a brief testimonial to build instant credibility with enterprise buyers.",
+          "prompts": [
+            {
+              "id": "atf_2",
+              "title": "Social-Proof Snapshot",
+              "prompt_text": "From the logos/testimonials below, craft a 15-word proof line and choose 3 logos to maximize credibility for enterprise buyers."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Hero Visual",
+          "sub_section_description": "Use a modern, relevant image or animation that reflects your AI expertise and professionalism while reinforcing the core value proposition.",
+          "prompts": [
+            {
+              "id": "atf_3",
+              "title": "Hero Visual Brief",
+              "prompt_text": "Generate a creative brief for a looping Lottie animation that visualizes 'AI-powered decision acceleration' in 10 seconds."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Primary CTA",
+          "sub_section_description": "Prominently display a focused call-to-action that must be visible without scrolling to drive immediate conversion.",
+          "prompts": []
+        }
+      ]
+    },
+    {
+      "section_name": "Market Insight",
+      "section_description": "Demonstrate understanding of your target audience's challenges and the evolving market landscape to establish relevance and empathy.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Problem Statement",
+          "sub_section_description": "Clearly articulate that you understand your target audience's specific pain points that your AI solution addresses.",
+          "prompts": [
+            {
+              "id": "mi_1",
+              "title": "Pain-Point Razor",
+              "prompt_text": "List the top 5 pains for ICP pulled from the survey data below, each in 12 words."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Industry Context",
+          "sub_section_description": "Reference challenges specific to your target sectors (e.g., compliance, scalability, data integration) to show domain expertise.",
+          "prompts": [
+            {
+              "id": "mi_2",
+              "title": "Industry Context Hook",
+              "prompt_text": "Write a 40-word paragraph citing a recent stat that magnifies the cost of inaction for [industry]."
+            },
+            {
+              "id": "mi_3",
+              "title": "Contrast Statement",
+              "prompt_text": "Craft a before-vs-after table (3 rows) comparing status quo vs. AI approach."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Value Propositions & Key Benefits",
+      "section_description": "Clearly articulate why your AI solution is uniquely valuable and the transformation or ROI it delivers to customers.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Main Value Proposition",
+          "sub_section_description": "Clearly articulate why your AI solution is uniquely valuable - what transformation or ROI do you deliver?",
+          "prompts": [
+            {
+              "id": "vp_1",
+              "title": "Core Value One-Liner",
+              "prompt_text": "Turn this product description into a single, punchy value proposition (15 words) starting with a verb."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Supporting Benefits",
+          "sub_section_description": "Use 3-4 concise bullet points or icons to highlight supporting benefits that reinforce your main value proposition.",
+          "prompts": [
+            {
+              "id": "vp_2",
+              "title": "Benefit Bullets Builder",
+              "prompt_text": "Convert each feature into a benefit-led bullet starting 'So you can…' (max 12 words)."
+            },
+            {
+              "id": "vp_3",
+              "title": "ROI Mini-Snippet",
+              "prompt_text": "Write a 25-word ROI claim using the data below; include % uplift and time frame."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Features Overview",
+          "sub_section_description": "Briefly list or illustrate core features, but keep the focus on outcomes rather than technical specifications.",
+          "prompts": []
+        }
+      ]
+    },
+    {
+      "section_name": "How It Works / Process",
+      "section_description": "Simplify your offering with a visual or step-by-step explanation that makes your AI solution approachable and easy to understand.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Step-by-Step Explanation",
+          "sub_section_description": "Simplify your offering with a visual or numbered process that clearly shows how your service or product works for customers.",
+          "prompts": [
+            {
+              "id": "hiw_1",
+              "title": "4-Step Flow",
+              "prompt_text": "Describe the service workflow in 4 verbs & 1-sentence explainer each. Maintain parallel structure."
+            },
+            {
+              "id": "hiw_2",
+              "title": "Process Icon Brief",
+              "prompt_text": "Suggest an icon theme (style + label) for each step named above."
+            },
+            {
+              "id": "hiw_3",
+              "title": "Time-to-Value Bar",
+              "prompt_text": "Draft microcopy for a progress bar showing kickoff → first insight in 30 days."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Use Cases / Solutions",
+      "section_description": "Demonstrate how your AI services address different industries or roles to make your solution tangible and relevant to specific visitor segments.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Industry or Role-Based Use Cases",
+          "sub_section_description": "Show how your AI services address different industries (finance, healthcare, manufacturing) or roles (CIO, operations, data science).",
+          "prompts": [
+            {
+              "id": "uc_1",
+              "title": "Role-Based Hook",
+              "prompt_text": "Write a 15-word header for the CFO card that speaks to cost-reduction pain."
+            },
+            {
+              "id": "uc_2",
+              "title": "Mini-Case Tile",
+              "prompt_text": "Summarize this customer story in 50 words: challenge, AI solution, quant result."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Dynamic Content",
+          "sub_section_description": "Use dynamic blocks to personalize use cases based on visitor segment or referral source for improved relevance.",
+          "prompts": [
+            {
+              "id": "uc_3",
+              "title": "Dynamic Block Logic",
+              "prompt_text": "Output pseudo-code to display different use-case tiles based on utm_industry value."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Social Proof & Trust",
+      "section_description": "Build credibility through testimonials, case studies, and certifications that validate your expertise and reliability.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Testimonials",
+          "sub_section_description": "Feature short quotes from satisfied clients or industry experts to build social proof and credibility.",
+          "prompts": [
+            {
+              "id": "sp_1",
+              "title": "Testimonial Transformer",
+              "prompt_text": "Rewrite this raw quote into a 30-word story (pain → result metric) + attribution."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Certifications & Security",
+          "sub_section_description": "Display relevant certifications or compliance badges, especially important for enterprise buyers in regulated industries.",
+          "prompts": [
+            {
+              "id": "sp_2",
+              "title": "Certification Strip",
+              "prompt_text": "Create alt-text (8 words each) for SOC 2 & ISO badges to aid accessibility."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Case Studies",
+          "sub_section_description": "Link to in-depth case studies or success stories that demonstrate real-world application and results.",
+          "prompts": [
+            {
+              "id": "sp_3",
+              "title": "Case-Study CTA",
+              "prompt_text": "Write a CTA button label (4 words) encouraging visitors to read case studies."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Secondary CTAs & Resources",
+      "section_description": "Offer lower-commitment options for visitors not ready to convert, providing valuable resources while capturing leads.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Early-Stage CTAs",
+          "sub_section_description": "Offer lower-commitment options for visitors not ready to convert, such as whitepapers or webinars.",
+          "prompts": [
+            {
+              "id": "sc_1",
+              "title": "Lead Magnet Teaser",
+              "prompt_text": "Craft a 20-word pitch for an AI ROI calculator download. End with action verb."
+            },
+            {
+              "id": "sc_2",
+              "title": "Webinar Blurb",
+              "prompt_text": "Write a 40-character headline & 60-word description for an on-demand webinar hero."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Newsletter Signup",
+          "sub_section_description": "Allow visitors to subscribe for updates or insights to maintain engagement with prospects not ready to convert.",
+          "prompts": [
+            {
+              "id": "sc_3",
+              "title": "Newsletter Microcopy",
+              "prompt_text": "Generate form headline, subtext (12 words), and submit button copy to boost sign-ups."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Navigation & UX",
+      "section_description": "Ensure intuitive navigation, responsive design, and personalization that creates a seamless experience for all visitors.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Strategic Navigation",
+          "sub_section_description": "Keep the top menu minimal, focused on key sections (Solutions, Industries, Resources, About, Contact).",
+          "prompts": [
+            {
+              "id": "ux_1",
+              "title": "Menu Label Audit",
+              "prompt_text": "Rewrite each nav label below to one word, plain-language, SEO-friendly."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Mobile-First Design",
+          "sub_section_description": "Ensure responsive design and fast load times for all devices to accommodate the growing mobile traffic share.",
+          "prompts": [
+            {
+              "id": "ux_2",
+              "title": "Mobile-First Checklist",
+              "prompt_text": "List 10 pass/fail criteria to test responsive behavior on iOS & Android."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Personalization",
+          "sub_section_description": "Use dynamic content or account-based marketing (ABM) tactics for high-value visitors to enhance relevance.",
+          "prompts": [
+            {
+              "id": "ux_3",
+              "title": "ABM Personalization Note",
+              "prompt_text": "Draft a 3-line tooltip that appears when ABM cookie is present, welcoming the visitor by company name."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_name": "Footer",
+      "section_description": "Include clear contact details, support links, social media, and legal compliance elements that build trust and provide easy access to important information.",
+      "sub_sections": [
+        {
+          "sub_section_name": "Contact Information",
+          "sub_section_description": "Include clear contact details, support links, and social media to make it easy for prospects to reach you.",
+          "prompts": [
+            {
+              "id": "ft_1",
+              "title": "Contact Block Copy",
+              "prompt_text": "Write a 20-word support tagline + phone & email formatting guidelines for enterprise buyers."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Legal and Compliance",
+          "sub_section_description": "Add privacy, terms, and compliance links, especially important if serving regulated industries.",
+          "prompts": [
+            {
+              "id": "ft_2",
+              "title": "Compliance Links",
+              "prompt_text": "Generate link text for Privacy, Terms, and AI Ethics pages (3 words each)."
+            }
+          ]
+        },
+        {
+          "sub_section_name": "Social Media",
+          "sub_section_description": "Encourage ongoing engagement by connecting visitors to your social media presence for relationship building.",
+          "prompts": [
+            {
+              "id": "ft_3",
+              "title": "Social CTA",
+              "prompt_text": "Suggest a playful 4-word invite to follow our LinkedIn page."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
