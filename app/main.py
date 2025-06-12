@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from app.routers import index_router
 from app.routers import agent_router
-
+from app.db.engine import engine
+from sqlmodel import SQLModel
 
 
 import asyncio
@@ -13,6 +14,8 @@ if sys.platform == "win32":
 
 
 app = FastAPI()
+
+SQLModel.metadata.create_all(bind=engine)
 
 app.include_router(index_router)
 app.include_router(agent_router)
