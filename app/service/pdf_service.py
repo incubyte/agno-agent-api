@@ -13,7 +13,10 @@ class PdfService:
     def save_pdf_file(self):
         if not os.path.exists('pdf'):
             os.makedirs('pdf')
-        HTML(string=self.html_content).write_pdf("pdf/output.pdf", stylesheets=[CSS('styles.css')])
+
+        base_dir = os.path.dirname(os.path.abspath(__file__)) 
+        css_path = os.path.join(base_dir, '..', 'static', 'css', 'styles.css')
+        HTML(string=self.html_content).write_pdf("pdf/output.pdf", stylesheets=[CSS(css_path)])
 
 
 

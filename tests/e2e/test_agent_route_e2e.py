@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 import asyncio
 from dotenv import load_dotenv
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from main import app
+from app.main import app
 
 load_dotenv(".env.test")
 

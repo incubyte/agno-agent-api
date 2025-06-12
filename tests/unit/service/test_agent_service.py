@@ -1,12 +1,35 @@
 import pytest
+import os
+import sys
+import importlib.util
 from unittest.mock import MagicMock, patch, ANY
-from service.agent_service import AgentService, tools, instructions
+
+sys.modules['routers'] = MagicMock()
+sys.modules['routers.index_router'] = MagicMock()
+sys.modules['routers.agent'] = MagicMock()
+sys.modules['core'] = MagicMock()
+sys.modules['core.settings'] = MagicMock()
+
+sys.modules['app.main'] = MagicMock()
+sys.modules['app.core'] = MagicMock()
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
+spec = importlib.util.spec_from_file_location(
+    "agent_service",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../app/service/agent_service.py'))
+)
+agent_service_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(agent_service_module)
+
+AgentService = agent_service_module.AgentService
+tools = agent_service_module.tools
+instructions = agent_service_module.instructions
 
 
-class TestAgentService:
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+class TestAgentService:    
+    @patch.object(agent_service_module, 'Agent')
+    @patch.object(agent_service_module, 'Claude')
     def test_init(self, mock_claude, mock_agent):
         """Test that AgentService initializes with correct parameters"""
         mock_claude_instance = MagicMock()
@@ -19,11 +42,9 @@ class TestAgentService:
             model=mock_claude_instance,
             tools=tools,
             instructions=instructions,
-            markdown=True
-        )
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+            markdown=True)
+    @patch.object(agent_service_module, 'Agent')
+    @patch.object(agent_service_module, 'Claude')
     def test_init_with_custom_params(self, mock_claude, mock_agent):
         """Test that AgentService initializes with custom parameters"""
 
@@ -47,11 +68,9 @@ class TestAgentService:
             model=mock_claude_instance,
             tools=custom_tools,
             instructions=custom_instructions,
-            markdown=False
-        )
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+            markdown=False        )
+    @patch.object(agent_service_module, 'Agent')
+    @patch.object(agent_service_module, 'Claude')
     def test_generate_response(self, mock_claude, mock_agent):
         """Test generate_response method returns expected content"""
         mock_claude_instance = MagicMock()
@@ -73,10 +92,9 @@ class TestAgentService:
             "Test query",
             markdown=True
         )
-        assert result == "Test response content"
-    
-    @patch('service.agent_service.Agent')
-    @patch('service.agent_service.Claude')
+        assert result == "Test response content"   
+    @patch.object(agent_service_module, 'Agent')
+    @patch.object(agent_service_module, 'Claude')
     def test_generate_response_with_markdown_disabled(self, mock_claude, mock_agent):
         """Test generate_response method with markdown disabled"""
         mock_claude_instance = MagicMock()
