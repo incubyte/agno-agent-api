@@ -4,11 +4,12 @@ from agno.models.anthropic import Claude
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.googlesearch import GoogleSearchTools
 from agno.tools.crawl4ai import Crawl4aiTools
+from app.agents.base_agent import BaseAgent
 from app.core import settings
 from agno.utils.pprint import pprint_run_response
 import os
 
-class MarketingAgent:
+class MarketingAgent(BaseAgent):
     def __init__(self):
         self.AGENT_STORAGE = settings.AGENT_STORAGE
         print(self.AGENT_STORAGE)
@@ -370,5 +371,13 @@ class MarketingAgent:
             print(f"Error running marketing website team: {e}")
             return f"# Error: {e}"
 
+
+    
     def run_marketing_agent(self, url: str) -> str:
         return self.review_marketing_website(url)
+    
+    def get_response(self, url: str) -> str:
+        print(f"Getting response for URL: {url}")
+        response = self.run_marketing_agent(url)
+        print("Response received successfully.")
+        return response

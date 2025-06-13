@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from app.agents.agent_factory import AgentFactory
 from app.service  import AgentService
 from fastapi import HTTPException
 
@@ -43,62 +44,26 @@ class AgentRouter:
     @router.post("/create-agent")
     def create_agent(self, agent: Agent): 
         created_agent = AgentRepository.create(agent)
+        if not created_agent:
+            raise HTTPException(status_code=400, detail="Failed to create agent")
         return created_agent
+    
 
-    @router.post("/agent")
-    def run_agent(self, request: AgentRequest):
+    @router.post("/run-agent/{agent_id}")
+    def run_agent_by_id(self, agent_id: int, request: AgentRequest):
         if not request.prompt:
-            raise HTTPException(status_code=400, detail="prompt must not be empty")
+            raise HTTPException(status_code=400, detail="Url must not be empty")
         if not request.user_email:
             raise HTTPException(status_code=400, detail="user_email must not be empty")
         
-        clean_response = "Hello"
-        # use orm and get all agents 
-        response = self.agent_service.generate_response(request.prompt)        
+        agent_data = AgentRepository.get_by_id(agent_id)
+        if not agent_data:
+            raise HTTPException(status_code=404, detail="Agent data not found")
+        
+        agent = AgentFactory.get_agent(agent_data.slug)
+        response = agent.get_response(request.prompt)
         clean_response = textwrap.dedent(response).lstrip()
-        self.pdf_service.convert_markdown_to_html(clean_response)
-        self.pdf_service.save_pdf_file()
-        try:
-            self.email_service.connect()
-            self.email_service.send_email(
-                to_email=request.user_email,
-                subject="Test Email",
-                body="Please find the attached PDF.",
-                pdf_path="pdf/output.pdf"
-            )
-            print("Email sent successfully.")
-            self.email_service.disconnect()
-        except Exception as e:
-            print(f"Failed to send email: {e}")
-            raise HTTPException(status_code=500, detail="Failed to send email")
         return {"response": clean_response}
-    
 
-    
-    @router.post("/run-marketing-agent")
-    def run_marketing_agent(self, request: MarketingAgentRequest):
-        if not request.url:
-            raise HTTPException(status_code=400, detail="url must not be empty")
-        if not request.user_email:
-            raise HTTPException(status_code=400, detail="user_email must not be empty")
-        marketing_agent = MarketingAgent()
-        response = marketing_agent.run_marketing_agent(request.url)
-        clean_response = textwrap.dedent(response).lstrip()
-        self.pdf_service.convert_markdown_to_html(clean_response)
-        self.pdf_service.save_pdf_file()
-        try:
-            self.email_service.connect()
-            self.email_service.send_email(
-                to_email=request.user_email,
-                subject="Test Email",
-                body="Please find the attached PDF.",
-                pdf_path="pdf/output.pdf"
-            )
-            print("Email sent successfully.")
-            self.email_service.disconnect()
-        except Exception as e:
-            print(f"Failed to send email: {e}")
-            raise HTTPException(status_code=500, detail="Failed to send email")
-        return {"response": clean_response}
-    
+
 
