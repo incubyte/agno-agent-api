@@ -43,11 +43,12 @@ class AgentRouter:
     @router.get("/agents/{agent_id}")
     def get_agent(self, agent_id: int):
         """Get a specific agent by ID"""
+        print(f"Fetching agent with ID: {agent_id}")
         try:
-            agent = self.agent_service.get_agent_by_id(agent_id)
-            if not agent:
+            agent_with_prompt = self.agent_service.get_agent_by_id(agent_id)
+            if not agent_with_prompt:
                 raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
-            return agent
+            return agent_with_prompt
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 

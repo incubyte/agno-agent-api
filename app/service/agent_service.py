@@ -8,6 +8,8 @@ from app.db.repository.agent_repository import AgentRepository
 from app.agents.agent_factory import AgentFactory
 import textwrap
 from fastapi import HTTPException
+from app.agents.agent_prompt_repository import agent_prompt_repository
+from app.agents.enum.agent_enum import AgentType
 
 
 
@@ -30,9 +32,23 @@ class AgentService:
         """Get a specific agent by ID"""
         try:
             agent = self.agent_repository.get_by_id(agent_id)
-            return agent
+            if not agent:
+                raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+            prompt = self.get_prompt(agent.slug)  
+            return {
+                "agent": agent,
+                "prompt": prompt
+            }
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to retrieve agent with ID {agent_id}: {str(e)}")
+        
+        
+    def get_prompt(self, slug: str) -> Optional[str]:
+        """Get the prompt for a specific agent by slug"""
+        prompt = agent_prompt_repository.get(AgentType(slug))
+        if not prompt:
+            raise HTTPException(status_code=404, detail=f"Prompt for agent with slug '{slug}' not found")
+        return prompt
 
     def create_agent(self, agent: Agent) -> Agent:
         """Create a new agent"""
@@ -63,10 +79,10 @@ class AgentService:
             agent_data = self.get_agent_by_id(agent_id)
             if not agent_data:
                 raise ValueError(f"Agent with ID {agent_id} not found")
-            
+            print(agent_data["agent"].slug)
             # Get the appropriate agent from factory
-            agent = AgentFactory.get_agent(agent_data.slug)
-            
+            agent = AgentFactory.get_agent(AgentType(agent_data["agent"].slug))
+
             # Generate response
             response = agent.get_response(prompt)
             
