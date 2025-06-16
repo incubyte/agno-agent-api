@@ -1,19 +1,15 @@
-from fastapi import APIRouter, Depends
-from app.agents.agent_factory import AgentFactory
-from app.service  import AgentService
-from fastapi import HTTPException
-
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from fastapi_utils.cbv import cbv
-from app.service import PdfService
-from app.service import EmailService
+
+from app.service.agent_service import AgentService
+from app.service import PdfService, EmailService
 from app.agents.marketing_agents import MarketingAgent
-import textwrap
-from app.db.repository.agent_repository import  AgentRepository
 from app.db.models import Agent
 
 
 router = APIRouter()
+
 
 class AgentRequest(BaseModel):
     prompt: str
@@ -26,44 +22,113 @@ class MarketingAgentRequest(BaseModel):
 
 
 @cbv(router)
-class AgentRouter: 
+class AgentRouter:
+    """Router for agent-related endpoints"""
 
     agent_service: AgentService = Depends(AgentService)
     pdf_service: PdfService = Depends(PdfService)
-    email_service: EmailService = Depends(EmailService)  
-    marketing_agent: MarketingAgent = Depends(MarketingAgent)
-
+    email_service: EmailService = Depends(EmailService)
 
     @router.get("/agents")
     def get_agents(self):
-        agents = AgentRepository.get_all()
-        if not agents:
-            raise HTTPException(status_code=404, detail="No agents found")
-        return agents
-    
+        """Get all agents"""
+        try:
+            agents = self.agent_service.get_all_agents()
+            if not agents:
+                raise HTTPException(status_code=404, detail="No agents found")
+            return agents
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+    @router.get("/agents/{agent_id}")
+    def get_agent(self, agent_id: int):
+        """Get a specific agent by ID"""
+        try:
+            agent = self.agent_service.get_agent_by_id(agent_id)
+            if not agent:
+                raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+            return agent
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
     @router.post("/create-agent")
-    def create_agent(self, agent: Agent): 
-        created_agent = AgentRepository.create(agent)
-        if not created_agent:
-            raise HTTPException(status_code=400, detail="Failed to create agent")
-        return created_agent
-    
+    def create_agent(self, agent: Agent):
+        """Create a new agent"""
+        try:
+            created_agent = self.agent_service.create_agent(agent)
+            return created_agent
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
     @router.post("/run-agent/{agent_id}")
     def run_agent_by_id(self, agent_id: int, request: AgentRequest):
-        if not request.prompt:
-            raise HTTPException(status_code=400, detail="Url must not be empty")
-        if not request.user_email:
-            raise HTTPException(status_code=400, detail="user_email must not be empty")
-        
-        agent_data = AgentRepository.get_by_id(agent_id)
-        if not agent_data:
-            raise HTTPException(status_code=404, detail="Agent data not found")
-        
-        agent = AgentFactory.get_agent(agent_data.slug)
-        response = agent.get_response(request.prompt)
-        clean_response = textwrap.dedent(response).lstrip()
-        return {"response": clean_response}
+        """Run an agent by ID with a given prompt"""
+        try:
+            response = self.agent_service.run_agent_by_id(
+                agent_id=agent_id,
+                prompt=request.prompt,
+                user_email=request.user_email
+            )
+            return {"response": response}
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
+    @router.put("/agents/{agent_id}")
+    def update_agent(self, agent_id: int, updated_data: dict):
+        """Update an existing agent"""
+        try:
+            updated_agent = self.agent_service.update_agent(agent_id, updated_data)
+            if not updated_agent:
+                raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+            return updated_agent
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
+    @router.delete("/agents/{agent_id}")
+    def delete_agent(self, agent_id: int):
+        """Delete an agent"""
+        try:
+            success = self.agent_service.delete_agent(agent_id)
+            if not success:
+                raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+            return {"message": f"Agent with ID {agent_id} deleted successfully"}
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+    @router.get("/agents/slug/{slug}")
+    def get_agent_by_slug(self, slug: str):
+        """Get an agent by slug"""
+        try:
+            agent = self.agent_service.get_agent_by_slug(slug)
+            if not agent:
+                raise HTTPException(status_code=404, detail=f"Agent with slug '{slug}' not found")
+            return agent
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+    @router.get("/agents/count")
+    def get_agent_count(self):
+        """Get the total count of agents"""
+        try:
+            count = self.agent_service.get_agent_count()
+            return {"count": count}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+    @router.get("/agents/exists/{slug}")
+    def check_agent_exists(self, slug: str):
+        """Check if an agent exists with the given slug"""
+        try:
+            exists = self.agent_service.agent_exists_by_slug(slug)
+            return {"exists": exists}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
