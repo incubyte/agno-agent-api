@@ -4,9 +4,7 @@ from app.routers import index_router
 from app.routers import agent_router
 from app.db.engine import engine
 from sqlmodel import SQLModel
-from app.core.setting import settings as settin
-
-
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import sys
 import signal
@@ -42,6 +40,14 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(index_router)
 app.include_router(agent_router)
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Signal handler for graceful shutdown (Windows ProactorEventLoop compatible)
 def signal_handler(signum, frame):
