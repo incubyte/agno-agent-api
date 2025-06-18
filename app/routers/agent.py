@@ -52,8 +52,6 @@ class AgentRouter:
         if not request.user_email:
             raise HTTPException(status_code=400, detail="user_email must not be empty")
         
-        clean_response = "Hello"
-        # use orm and get all agents 
         response = self.agent_service.generate_response(request.prompt)        
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
