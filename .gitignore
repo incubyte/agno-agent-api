@@ -13,3 +13,5 @@ wheels/
 
 .vscode/
 pdf/
+agent_storage.db
+agents_storage.db

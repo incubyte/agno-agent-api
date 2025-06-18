@@ -8,7 +8,8 @@ from app.service import PdfService
 from app.service import EmailService
 from app.agents.marketing_agents import MarketingAgent
 import textwrap
-
+from app.db.repository.agent_repository import  AgentRepository
+from app.db.models import Agent
 
 
 router = APIRouter()
@@ -31,12 +32,26 @@ class AgentRouter:
     email_service: EmailService = Depends(EmailService)  
     marketing_agent: MarketingAgent = Depends(MarketingAgent)
 
+
+    @router.get("/agents")
+    def get_agents(self):
+        agents = AgentRepository.get_all()
+        if not agents:
+            raise HTTPException(status_code=404, detail="No agents found")
+        return agents
+    
+    @router.post("/create-agent")
+    def create_agent(self, agent: Agent): 
+        created_agent = AgentRepository.create(agent)
+        return created_agent
+
     @router.post("/agent")
     def run_agent(self, request: AgentRequest):
         if not request.prompt:
             raise HTTPException(status_code=400, detail="prompt must not be empty")
         if not request.user_email:
             raise HTTPException(status_code=400, detail="user_email must not be empty")
+        
         response = self.agent_service.generate_response(request.prompt)        
         clean_response = textwrap.dedent(response).lstrip()
         self.pdf_service.convert_markdown_to_html(clean_response)
@@ -83,3 +98,5 @@ class AgentRouter:
             print(f"Failed to send email: {e}")
             raise HTTPException(status_code=500, detail="Failed to send email")
         return {"response": clean_response}
+    
+
