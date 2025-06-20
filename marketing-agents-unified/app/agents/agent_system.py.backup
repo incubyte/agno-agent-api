@@ -1,0 +1,250 @@
+"""
+AI Agent Implementations
+Simplified and unified agent system.
+"""
+
+from enum import Enum
+from abc import ABC, abstractmethod
+from typing import Dict, Any, List
+
+
+class AgentType(str, Enum):
+    """Available agent types"""
+    MARKETING_AGENT = "marketing-agent"
+    TECH_BLOG_WRITER = "tech-blog-writer" 
+    LINKEDIN_WRITER = "linkedin-writer"
+    LIFESTYLE_BLOG_WRITER = "lifestyle-blog-writer"
+
+
+class BaseAgent(ABC):
+    """Base class for all AI agents"""
+    
+    def __init__(self, name: str, description: str):
+        self.name = name
+        self.description = description
+    
+    @abstractmethod
+    def get_response(self, prompt: str, **kwargs) -> str:
+        """Generate response for the given prompt"""
+        pass
+    
+    def get_prompt_template(self) -> str:
+        """Get the system prompt template for this agent"""
+        return f"You are {self.name}. {self.description}"
+
+
+class MarketingAgent(BaseAgent):
+    """Marketing analysis and strategy agent"""
+    
+    def __init__(self):
+        super().__init__(
+            name="Marketing Analysis Agent",
+            description="An AI specialist in marketing analysis, strategy development, and campaign optimization."
+        )
+    
+    def get_response(self, prompt: str, **kwargs) -> str:
+        """Generate marketing analysis response"""
+        system_prompt = """You are an expert marketing analyst with deep knowledge of:
+        - Market research and competitive analysis
+        - Customer segmentation and targeting
+        - Campaign strategy and optimization
+        - Brand positioning and messaging
+        - Digital marketing trends and best practices
+        
+        Provide detailed, actionable marketing insights based on the user's request."""
+        
+        # In a real implementation, this would call an AI model
+        return f"""
+**Marketing Analysis Response**
+
+Based on your request: "{prompt}"
+
+**Key Insights:**
+• Market opportunity analysis shows significant potential
+• Target audience segmentation reveals 3 primary customer groups
+• Competitive landscape requires differentiated positioning
+• Recommended channels: Digital-first approach with social media focus
+
+**Strategic Recommendations:**
+1. **Brand Positioning:** Focus on unique value proposition
+2. **Target Market:** Prioritize early adopters in tech-savvy segment
+3. **Marketing Mix:** 60% digital, 30% content, 10% traditional
+4. **Budget Allocation:** Emphasize performance marketing and analytics
+
+**Implementation Timeline:**
+- Week 1-2: Market research and persona development
+- Week 3-4: Campaign strategy and creative development
+- Week 5-8: Campaign launch and optimization
+- Week 9-12: Performance analysis and iteration
+
+**Expected Outcomes:**
+- 25-40% increase in brand awareness
+- 15-30% improvement in lead generation
+- 20-35% boost in customer engagement
+
+*This analysis is based on current market trends and best practices. Specific results may vary based on execution and market conditions.*
+        """
+
+
+class TechBlogWriter(BaseAgent):
+    """Technical blog writing agent"""
+    
+    def __init__(self):
+        super().__init__(
+            name="Tech Blog Writer",
+            description="An AI specialist in technical content creation and programming tutorials."
+        )
+    
+    def get_response(self, prompt: str, **kwargs) -> str:
+        """Generate technical blog content"""
+        return f"""
+**Technical Blog Post**
+
+# {prompt.title()}
+
+## Introduction
+Welcome to this comprehensive guide on {prompt}. In this post, we'll explore the key concepts, implementation details, and best practices.
+
+## Key Concepts
+- **Core Principles:** Understanding the fundamental concepts
+- **Technical Architecture:** How the system components work together
+- **Implementation Strategy:** Step-by-step approach to implementation
+
+## Code Examples
+```python
+# Example implementation
+def example_function():
+    return "This is a technical implementation example"
+```
+
+## Best Practices
+1. Follow industry standards and conventions
+2. Implement proper error handling
+3. Write comprehensive tests
+4. Document your code thoroughly
+
+## Conclusion
+This guide provides a solid foundation for understanding {prompt}. Continue exploring and experimenting to deepen your knowledge.
+
+*Happy coding!*
+        """
+
+
+class LinkedInWriter(BaseAgent):
+    """LinkedIn content creation agent"""
+    
+    def __init__(self):
+        super().__init__(
+            name="LinkedIn Content Writer", 
+            description="An AI specialist in professional LinkedIn content and networking posts."
+        )
+    
+    def get_response(self, prompt: str, **kwargs) -> str:
+        """Generate LinkedIn post content"""
+        return f"""
+**LinkedIn Post**
+
+🚀 {prompt}
+
+Here's what I've learned:
+
+✅ Key insight #1: Professional growth requires continuous learning
+✅ Key insight #2: Networking is about building genuine relationships
+✅ Key insight #3: Sharing knowledge creates value for the community
+
+💡 **My takeaway:** Success in today's professional landscape demands adaptability and collaboration.
+
+What's your experience with {prompt.lower()}? Share your thoughts in the comments!
+
+#ProfessionalDevelopment #Leadership #CareerGrowth #Networking
+
+---
+*Follow for more insights on professional development and industry trends.*
+        """
+
+
+class LifestyleBlogWriter(BaseAgent):
+    """Lifestyle blog writing agent"""
+    
+    def __init__(self):
+        super().__init__(
+            name="Lifestyle Blog Writer",
+            description="An AI specialist in lifestyle content, wellness, and personal development."
+        )
+    
+    def get_response(self, prompt: str, **kwargs) -> str:
+        """Generate lifestyle blog content"""
+        return f"""
+**Lifestyle Blog Post**
+
+# Embracing {prompt}: A Journey to Better Living
+
+## Introduction
+In today's fast-paced world, {prompt.lower()} has become more important than ever. Let's explore how to incorporate this into your daily life.
+
+## Why It Matters
+✨ **Personal Growth:** Enhances your overall well-being
+✨ **Life Balance:** Creates harmony between different life aspects  
+✨ **Mindful Living:** Promotes awareness and intentionality
+
+## Practical Tips
+1. **Start Small:** Begin with manageable changes
+2. **Be Consistent:** Build sustainable habits
+3. **Stay Positive:** Maintain an optimistic mindset
+4. **Track Progress:** Monitor your journey
+
+## Personal Reflection
+Remember, every journey is unique. What works for others might need adaptation for your lifestyle.
+
+## Call to Action
+Ready to start your {prompt.lower()} journey? Take the first step today!
+
+*What's your experience with {prompt.lower()}? I'd love to hear your story in the comments below!*
+
+---
+*For more lifestyle tips and inspiration, subscribe to our newsletter.*
+        """
+
+
+class AgentFactory:
+    """Factory class for creating agent instances"""
+    
+    _agents = {
+        AgentType.MARKETING_AGENT: MarketingAgent,
+        AgentType.TECH_BLOG_WRITER: TechBlogWriter,
+        AgentType.LINKEDIN_WRITER: LinkedInWriter,
+        AgentType.LIFESTYLE_BLOG_WRITER: LifestyleBlogWriter
+    }
+    
+    @classmethod
+    def get_agent(cls, agent_type: AgentType) -> BaseAgent:
+        """Get agent instance by type"""
+        if agent_type not in cls._agents:
+            raise ValueError(f"Unknown agent type: {agent_type}")
+        
+        return cls._agents[agent_type]()
+    
+    @classmethod
+    def get_available_types(cls) -> List[AgentType]:
+        """Get list of available agent types"""
+        return list(cls._agents.keys())
+    
+    @classmethod
+    def get_agent_prompt(cls, agent_type: AgentType) -> str:
+        """Get the system prompt for an agent type"""
+        agent = cls.get_agent(agent_type)
+        return agent.get_prompt_template()
+
+
+# Agent prompt repository for backward compatibility
+class AgentPromptRepository:
+    """Repository for agent prompts"""
+    
+    @staticmethod
+    def get(agent_type: AgentType) -> str:
+        """Get prompt for agent type"""
+        return AgentFactory.get_agent_prompt(agent_type)
+
+
+# Global instance for backward compatibility
+agent_prompt_repository = AgentPromptRepository()
