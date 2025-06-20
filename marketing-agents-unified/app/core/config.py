@@ -74,6 +74,16 @@ class Settings(BaseSettings):
     AI_MODEL_TIMEOUT: int = 30  # seconds
     AI_MAX_RETRIES: int = 3
     
+    # =============================================================================
+    # AGENT STORAGE
+    # =============================================================================
+    AGENT_STORAGE: str = "./agents_storage.db"
+    
+    # =============================================================================
+    # ANTHROPIC API
+    # =============================================================================
+    ANTHROPIC_API_KEY: Optional[str] = None
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

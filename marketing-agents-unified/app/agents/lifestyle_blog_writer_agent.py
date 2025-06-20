@@ -3,320 +3,401 @@ Lifestyle Blog Writer Agent Implementation
 AI specialist in lifestyle content, wellness, and personal development.
 """
 
-from .base_agent import BaseAgent
+from agno.agent import Agent, RunResponse
+from agno.models.anthropic import Claude
+from agno.tools.reasoning import ReasoningTools
+from agno.tools.googlesearch import GoogleSearchTools
+from app.agents.base_agent import BaseAgent
+from app.core import settings
+from agno.utils.pprint import pprint_run_response
+from typing import Iterator
 
 
 class LifestyleBlogWriterAgent(BaseAgent):
-    """Lifestyle blog writing agent"""
-    
     def __init__(self):
         super().__init__(
             name="Lifestyle Blog Writer",
             description="An AI specialist in lifestyle content, wellness, and personal development."
         )
-    
-    def get_response(self, prompt: str, **kwargs) -> str:
-        """Generate lifestyle blog content"""
+        self.lifestyle_blog_writer = self._create_lifestyle_blog_writer()
+
+    def _create_lifestyle_blog_writer(self):
+        return Agent(
+            name="Lifestyle Blog Writer",
+            role="You are an expert lifestyle blog writer specializing in wellness, personal development, and lifestyle content",
+            model=Claude(id="claude-3-5-sonnet-20241022", max_tokens=6144),
+            instructions=[
+                "Create engaging, relatable lifestyle blog posts that inspire and provide practical value",
+                "Use storytelling techniques to connect emotionally with readers",
+                "Include personal insights, practical tips, and actionable advice",
+                "Write in a conversational, authentic tone that feels like talking to a friend",
+                "Focus on topics like wellness, personal growth, relationships, productivity, and life balance",
+                "Include relatable examples and real-life scenarios",
+                "Use positive, uplifting language that motivates readers",
+                "Structure content with engaging introductions, valuable body content, and inspiring conclusions",
+                "Include practical takeaways that readers can implement immediately",
+                "Use markdown formatting for better readability",
+                "Create content that feels authentic and avoids being preachy",
+                "Include relevant lifestyle trends and current topics when appropriate",
+                "Focus on holistic well-being including mental, physical, and emotional health",
+                "Make complex lifestyle concepts accessible and easy to understand",
+            ],
+            show_tool_calls=True,
+            tools=[ReasoningTools(add_instructions=True), GoogleSearchTools()],
+            stream=True,
+            markdown=True,
+        )
+
+    def generate_lifestyle_blog_post(self, topic: str, style: str = "casual", length: str = "medium", focus_area: str = "general") -> str:
+        """
+        Generate a lifestyle blog post based on the topic, style, and length
+        
+        Args:
+            topic: The lifestyle topic for the blog post
+            style: Writing style (casual, formal, inspirational, conversational)
+            length: Desired post length (short, medium, long)
+            focus_area: Specific lifestyle focus (wellness, productivity, relationships, personal_growth, mindfulness, fitness)
+        """
+        
+        # Define length specifications
+        length_specs = {
+            "short": "800-1200 words, focused and actionable with key insights",
+            "medium": "1500-2200 words, comprehensive coverage with stories and practical tips", 
+            "long": "2500-3500 words, in-depth exploration with multiple perspectives and detailed guidance"
+        }
+        
+        # Define style specifications
+        style_specs = {
+            "casual": "Friendly, conversational tone like talking to a close friend, use personal anecdotes",
+            "formal": "Professional yet warm tone, structured approach with clear sections and expert insights",
+            "inspirational": "Uplifting, motivational tone that empowers readers to take action and embrace change",
+            "conversational": "Natural, flowing dialogue style with questions and direct reader engagement"
+        }
+        
+        # Define focus area specifications
+        focus_specs = {
+            "wellness": "Holistic health, mental well-being, self-care practices, and healthy lifestyle choices",
+            "productivity": "Time management, goal setting, habits, work-life balance, and efficiency tips",
+            "relationships": "Communication, boundaries, love, friendship, family dynamics, and social connections",
+            "personal_growth": "Self-improvement, mindset, confidence, learning, and personal transformation",
+            "mindfulness": "Meditation, presence, stress reduction, gratitude, and mindful living practices",
+            "fitness": "Exercise routines, motivation, body positivity, nutrition, and physical wellness",
+            "general": "Broad lifestyle topics covering multiple aspects of modern living"
+        }
+
+        enhanced_prompt = f"""
+        Create a lifestyle blog post about: "{topic}"
+        
+        Specifications:
+        - Style: {style} ({style_specs.get(style, style_specs['casual'])})
+        - Length: {length} ({length_specs.get(length, length_specs['medium'])})
+        - Focus Area: {focus_area} ({focus_specs.get(focus_area, focus_specs['general'])})
+        
+        Content Structure Requirements:
+        1. **Compelling Title**: Engaging, relatable headline that draws readers in
+        2. **Hook Opening**: Start with a relatable scenario, question, or personal story
+        3. **Personal Connection**: Share relevant personal insights or experiences
+        4. **Main Content**: Valuable lifestyle advice organized in digestible sections
+        5. **Practical Tips**: Actionable advice readers can implement today
+        6. **Real-life Examples**: Relatable scenarios and case studies
+        7. **Common Challenges**: Address obstacles and how to overcome them
+        8. **Mindful Reflection**: Encourage self-reflection and awareness
+        9. **Inspiring Conclusion**: End with motivation and clear next steps
+        10. **Call-to-Action**: Encourage reader engagement and community building
+        
+        Lifestyle Writing Guidelines:
+        - Use inclusive language that speaks to diverse experiences
+        - Include personal anecdotes and relatable stories
+        - Balance inspiration with practical, actionable advice
+        - Address common lifestyle challenges with empathy
+        - Use conversational transitions and natural flow
+        - Include questions that encourage self-reflection
+        - Avoid being preachy or judgmental
+        - Focus on progress over perfection
+        - Include diverse perspectives on lifestyle choices
+        - Use sensory details to make content vivid and engaging
+        
+        Target Audience Context:
+        - Modern professionals seeking work-life balance
+        - Individuals interested in personal growth and wellness
+        - People looking for practical lifestyle improvements
+        - Readers seeking authentic, relatable content
+        - Community-minded individuals wanting connection and inspiration
+        
+        Content Themes to Weave In:
+        - Authenticity and self-acceptance
+        - Sustainable lifestyle changes
+        - Mental health awareness and support
+        - Community and connection
+        - Mindful living and presence
+        - Personal empowerment and growth
+        - Practical wellness that fits real life
+        
+        Please create an engaging lifestyle blog post that provides genuine value, inspiration, and practical guidance for readers seeking to improve their daily lives and overall well-being.
+        """
+
+        try:
+            print(f"Generating lifestyle blog post for topic: {topic}")
+            response_stream: Iterator[RunResponse] = self.lifestyle_blog_writer.run(enhanced_prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
+            pprint_run_response(response, markdown=True)
+            print("Lifestyle blog post generated successfully.")
+            return content
+        except Exception as e:
+            print(f"Error generating lifestyle blog post: {e}")
+            return f"# Error generating lifestyle blog post: {e}"
+
+    def create_lifestyle_series(self, theme: str, series_length: int = 5, focus_area: str = "wellness") -> str:
+        """
+        Create a series of related lifestyle blog posts
+        """
+        
+        series_prompt = f"""
+        Create a comprehensive lifestyle blog series about: "{theme}"
+        
+        Series Specifications:
+        - Number of posts: {series_length}
+        - Focus area: {focus_area}
+        - Each post should be 1500-2200 words
+        - Progressive depth and practical application
+        - Connected theme with standalone value
+        
+        Please provide:
+        1. **Series Overview**: Main theme, target audience, and transformation journey
+        2. **Series Outline**: Title and compelling description for each post
+        3. **Detailed Content Plan**: For each post include:
+           - Specific lifestyle topics to cover
+           - Key insights and takeaways
+           - Personal stories or examples needed
+           - Practical exercises or challenges
+           - Reader engagement opportunities
+        4. **Community Building Strategy**: How to encourage reader interaction
+        5. **Publishing Schedule**: Optimal timing and reader preparation
+        6. **Series Conclusion**: How posts build toward a complete lifestyle transformation
+        
+        Ensure the series:
+        - Builds momentum and engagement from post to post
+        - Includes practical challenges and exercises
+        - Addresses real-life obstacles and solutions
+        - Creates a supportive community feeling
+        - Offers both quick wins and long-term lifestyle changes
+        - Balances inspiration with practical guidance
+        
+        Target Audience: People seeking authentic lifestyle improvement and personal growth
+        Focus: Practical, sustainable changes that enhance daily life and well-being
+        """
+
+        try:
+            print(f"Creating lifestyle blog series for theme: {theme}")
+            response_stream: Iterator[RunResponse] = self.lifestyle_blog_writer.run(series_prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
+            print("Lifestyle blog series created successfully.")
+            return content
+        except Exception as e:
+            print(f"Error creating lifestyle blog series: {e}")
+            return f"# Error creating lifestyle series: {e}"
+
+    def create_seasonal_content(self, season: str, lifestyle_focus: str = "wellness") -> str:
+        """
+        Create seasonal lifestyle content
+        """
+        
+        seasonal_prompt = f"""
+        Create seasonal lifestyle content for: "{season}"
+        
+        Focus Area: {lifestyle_focus}
+        
+        Seasonal Content Requirements:
+        1. **Seasonal Connection**: How this time of year affects lifestyle and well-being
+        2. **Timely Challenges**: Common struggles people face during this season
+        3. **Seasonal Opportunities**: Unique advantages and possibilities this season offers
+        4. **Practical Adaptations**: How to adjust routines and habits seasonally
+        5. **Mood and Energy**: Addressing seasonal emotional and physical changes
+        6. **Seasonal Activities**: Lifestyle practices that align with the season
+        7. **Mindful Transitions**: How to embrace seasonal changes gracefully
+        8. **Community and Connection**: Seasonal social dynamics and relationships
+        9. **Self-Care Adjustments**: Season-specific wellness and self-care practices
+        10. **Goal Setting**: How to align personal goals with seasonal energy
+        
+        Content should feel:
+        - Timely and relevant to current seasonal experiences
+        - Practical for implementation during this specific time
+        - Sensitive to seasonal mood variations
+        - Inclusive of different climate and cultural experiences
+        - Focused on sustainable seasonal habits
+        
+        Target Audience: People seeking to live more intentionally with seasonal rhythms
+        """
+
+        try:
+            print(f"Creating seasonal lifestyle content for: {season}")
+            response_stream: Iterator[RunResponse] = self.lifestyle_blog_writer.run(seasonal_prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
+            print("Seasonal lifestyle content created successfully.")
+            return content
+        except Exception as e:
+            print(f"Error creating seasonal content: {e}")
+            return f"# Error creating seasonal content: {e}"
+
+    def create_lifestyle_guide(self, topic: str, target_audience: str = "general") -> str:
+        """
+        Create a comprehensive lifestyle guide
+        """
+        
+        guide_prompt = f"""
+        Create a comprehensive lifestyle guide about: "{topic}"
+        
+        Target Audience: {target_audience}
+        
+        Guide Structure:
+        1. **Introduction**: Why this lifestyle area matters and what readers will gain
+        2. **Assessment**: Help readers understand their current situation
+        3. **Foundation Building**: Core principles and mindset shifts needed
+        4. **Step-by-Step Process**: Clear, actionable phases of implementation
+        5. **Common Obstacles**: Challenges readers will face and how to overcome them
+        6. **Tools and Resources**: Practical tools, apps, books, and resources
+        7. **Real-Life Application**: How to integrate into busy, real life
+        8. **Troubleshooting**: What to do when things don't go as planned
+        9. **Community and Support**: Building support systems and accountability
+        10. **Long-term Sustainability**: Maintaining changes and continuing growth
+        11. **Celebration and Reflection**: Recognizing progress and adjusting course
+        
+        Guide Requirements:
+        - Comprehensive yet accessible
+        - Practical steps with clear timelines
+        - Address different life situations and constraints
+        - Include beginner to advanced strategies
+        - Provide motivation and encouragement throughout
+        - Offer flexible approaches for different personalities and lifestyles
+        - Include reflection questions and self-assessment tools
+        
+        Target Audience: People ready to make meaningful lifestyle changes with practical guidance
+        """
+
+        try:
+            print(f"Creating comprehensive lifestyle guide for: {topic}")
+            response_stream: Iterator[RunResponse] = self.lifestyle_blog_writer.run(guide_prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
+            print("Lifestyle guide created successfully.")
+            return content
+        except Exception as e:
+            print(f"Error creating lifestyle guide: {e}")
+            return f"# Error creating lifestyle guide: {e}"
+
+    def chat_lifestyle_advice(self, message: str, context_history: list = None) -> str:
+        """
+        Provide conversational lifestyle advice and coaching
+        """
+        
+        if context_history is None:
+            context_history = []
+        
+        # Build conversation context
+        conversation_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in context_history])
+        
+        chat_prompt = f"""
+        You are having a supportive, friendly conversation about lifestyle and personal development.
+        
+        Previous conversation context:
+        {conversation_context}
+        
+        Current message from user: "{message}"
+        
+        Respond as a caring lifestyle coach and friend who:
+        - Listens empathetically and validates feelings
+        - Asks thoughtful follow-up questions when appropriate
+        - Provides practical, actionable advice
+        - Shares relevant insights without being preachy
+        - Encourages self-reflection and personal growth
+        - Maintains a warm, supportive tone
+        - Offers different perspectives and options
+        - Acknowledges that everyone's lifestyle journey is unique
+        
+        Keep the response conversational, supportive, and practical. Focus on empowerment and positive action.
+        """
+
+        try:
+            print(f"Providing lifestyle chat response for: {message[:50]}...")
+            response_stream: Iterator[RunResponse] = self.lifestyle_blog_writer.run(chat_prompt)
+            content = ""
+            for response in response_stream:
+                content += response.content
+            print("Lifestyle chat response generated successfully.")
+            return content
+        except Exception as e:
+            print(f"Error generating lifestyle chat response: {e}")
+            return f"I'm sorry, I'm having trouble responding right now. Could you try asking again?"
+
+    def get_response(self, prompt: str) -> str:
+        """
+        Main interface method that handles different types of lifestyle content requests
+        """
+        print(f"Processing lifestyle blog content request: {prompt}")
         
         # Parse the prompt to determine the type of content and parameters
         prompt_lower = prompt.lower()
         
-        # Detect content type and generate appropriate response
+        # Detect series requests
         if "series" in prompt_lower or "multiple posts" in prompt_lower:
-            return self._generate_series_outline(prompt)
-        elif any(season in prompt_lower for season in ["spring", "summer", "fall", "autumn", "winter", "seasonal", "holiday"]):
-            return self._generate_seasonal_content(prompt)
-        elif "guide" in prompt_lower or "comprehensive" in prompt_lower:
-            return self._generate_lifestyle_guide(prompt)
-        elif "chat" in prompt_lower or "advice" in prompt_lower or "help me" in prompt_lower:
-            return self._generate_lifestyle_advice(prompt)
-        else:
-            return self._generate_blog_post(prompt)
-    
-    def _generate_blog_post(self, topic: str) -> str:
-        """Generate a lifestyle blog post"""
-        return f"""
-**Lifestyle Blog Post**
-
-# Embracing {topic}: A Journey to Better Living
-
-## Introduction
-In today's fast-paced world, {topic.lower()} has become more important than ever. Let's explore how to incorporate this into your daily life for a more fulfilling and balanced existence.
-
-## Why It Matters
-✨ **Personal Growth:** Enhances your overall well-being and self-awareness
-✨ **Life Balance:** Creates harmony between different aspects of your life  
-✨ **Mindful Living:** Promotes awareness and intentionality in daily choices
-✨ **Authentic Connection:** Helps you connect more deeply with yourself and others
-
-## Practical Tips for Implementation
-
-### Start Where You Are
-Remember, every journey begins with a single step. You don't need to overhaul your entire life overnight. Here are some gentle ways to begin:
-
-1. **Morning Mindfulness:** Start your day with 5 minutes of quiet reflection
-2. **Intentional Choices:** Before making decisions, pause and ask "Does this align with my values?"
-3. **Small Victories:** Celebrate progress, no matter how small
-4. **Community Connection:** Share your journey with supportive friends or family
-
-### Building Sustainable Habits
-The key to lasting change lies in consistency, not perfection. Focus on:
-
-- **Progress over Perfection:** Embrace the learning process
-- **Self-Compassion:** Be kind to yourself when things don't go as planned
-- **Flexibility:** Adapt your approach as you learn what works for you
-- **Regular Check-ins:** Weekly reflection on your journey and adjustments needed
-
-## Common Challenges and How to Navigate Them
-
-**Challenge:** "I don't have time for lifestyle changes"
-**Solution:** Start with micro-habits that take less than 2 minutes
-
-**Challenge:** "I keep falling back into old patterns"
-**Solution:** This is normal! Focus on returning to your practices rather than being perfect
-
-**Challenge:** "I don't see immediate results"
-**Solution:** Track small wins and remember that meaningful change takes time
-
-## Real-Life Application
-
-Let me share how Sarah, a busy professional, transformed her relationship with {topic.lower()}:
-
-*"I used to think I needed hours each day to focus on my well-being. But I learned that even 10 minutes of intentional practice in the morning changed my entire day. Now, six months later, these small moments have become the foundation of a life I truly love."*
-
-## Creating Your Personal Action Plan
-
-1. **Assess Your Current State:** Where are you right now with {topic.lower()}?
-2. **Set One Small Goal:** What's one tiny step you can take this week?
-3. **Choose Your Support:** Who or what will help you stay accountable?
-4. **Schedule Regular Reviews:** When will you check in with yourself?
-
-## Embracing the Journey
-
-Remember, this isn't about becoming someone completely different. It's about becoming more authentically yourself. Every small step matters, every moment of awareness counts, and every choice to prioritize your well-being is a victory worth celebrating.
-
-## Your Next Steps
-
-As you close this post, take a moment to reflect: What resonated most with you? What's one small thing you're inspired to try today?
-
-**I'd love to hear from you!** Share in the comments below: What's your biggest challenge or success with {topic.lower()}? Your story might be exactly what someone else needs to hear today.
-
----
-
-*Remember: You're not alone on this journey. Every step forward, no matter how small, is moving you toward a life that feels more authentic and fulfilling. Be patient with yourself, celebrate your progress, and keep going.*
-
-**Ready to dive deeper?** Subscribe to our newsletter for weekly lifestyle tips and join our community of people committed to living their best lives.
-
-#Lifestyle #Wellness #PersonalGrowth #MindfulLiving #Authenticity
-        """
-    
-    def _generate_series_outline(self, theme: str) -> str:
-        """Generate a lifestyle blog series outline"""
-        return f"""
-**Lifestyle Blog Series: {theme}**
-
-## Series Overview
-This comprehensive series will guide readers through a transformative journey with {theme.lower()}, providing practical tools, inspiration, and community support for lasting lifestyle changes.
-
-## Series Outline
-
-### Post 1: "Getting Started - Your Foundation for Change"
-- Understanding your current relationship with {theme.lower()}
-- Setting realistic and meaningful goals
-- Creating your personal motivation anchor
-- **Challenge:** Complete a self-assessment and set one small intention
-
-### Post 2: "Building Your Daily Practice"
-- Designing sustainable habits that stick
-- Morning and evening routines that support your goals
-- Overcoming common obstacles and resistance
-- **Challenge:** Establish one daily 5-minute practice
-
-### Post 3: "Mindset Matters - Transforming Your Inner Dialogue"
-- Identifying limiting beliefs and thought patterns
-- Cultivating self-compassion and patience
-- Reframing setbacks as learning opportunities
-- **Challenge:** Practice daily affirmations for one week
-
-### Post 4: "Community and Connection"
-- Building supportive relationships around your goals
-- Setting healthy boundaries
-- Finding accountability partners and mentors
-- **Challenge:** Reach out to one person who supports your journey
-
-### Post 5: "Sustaining Your Transformation"
-- Creating systems for long-term success
-- Celebrating progress and milestones
-- Planning for challenges and life changes
-- **Challenge:** Create your 90-day continuation plan
-
-## Engagement Strategy
-- Weekly reflection prompts
-- Community challenges with accountability
-- Reader success story features
-- Live Q&A sessions
-
-**Publishing Schedule:** One post every Tuesday for 5 weeks
-**Community Building:** Private Facebook group for series participants
-        """
-    
-    def _generate_seasonal_content(self, season: str) -> str:
-        """Generate seasonal lifestyle content"""
-        season_word = next((s for s in ["spring", "summer", "fall", "autumn", "winter"] if s in season.lower()), "seasonal")
+            # Extract series length if specified
+            series_length = 5  # default
+            for num in range(3, 11):  # check for numbers 3-10
+                if str(num) in prompt:
+                    series_length = num
+                    break
+            return self.create_lifestyle_series(prompt, series_length)
         
-        return f"""
-**Seasonal Lifestyle Guide: Embracing {season_word.title()}**
-
-## The Energy of {season_word.title()}
-Every season brings its own unique energy and opportunities for growth. {season_word.title()} invites us to...
-
-### Seasonal Wellness Practices
-- **Physical:** Activities that align with {season_word} energy
-- **Mental:** Mindset shifts for this time of year  
-- **Emotional:** Honoring the feelings this season brings
-- **Spiritual:** Connecting with the natural rhythms
-
-### {season_word.title()} Self-Care Rituals
-1. **Morning Rituals:** Start your day aligned with seasonal energy
-2. **Nourishment:** Foods that support your body during this time
-3. **Movement:** Exercise that feels good in {season_word}
-4. **Rest:** Sleep and relaxation practices for optimal wellness
-
-### Common {season_word.title()} Challenges
-- Energy fluctuations and how to work with them
-- Seasonal mood changes and support strategies
-- Maintaining routines when life feels different
-- Balancing social energy with personal time
-
-### Creating Your {season_word.title()} Intention
-Reflect on these questions:
-- How do I want to feel this {season_word}?
-- What practices will support my well-being?
-- How can I embrace change and transition gracefully?
-- What am I ready to release or welcome?
-
-**{season_word.title()} Affirmation:** "I trust the natural rhythms of life and allow myself to flow with the season's gifts."
-        """
-    
-    def _generate_lifestyle_guide(self, topic: str) -> str:
-        """Generate a comprehensive lifestyle guide"""
-        return f"""
-**Complete Lifestyle Guide: {topic}**
-
-## Introduction: Why This Matters
-This comprehensive guide will walk you through everything you need to know about {topic.lower()}, from understanding the basics to creating lasting change in your daily life.
-
-## Part 1: Foundation Building
-
-### Understanding Your Starting Point
-- Self-assessment questionnaire
-- Identifying current patterns and habits
-- Recognizing your unique needs and preferences
-- Setting realistic and meaningful goals
-
-### Core Principles
-- The science behind {topic.lower()}
-- Key mindset shifts needed for success
-- Common myths and misconceptions
-- Building a sustainable approach
-
-## Part 2: The Step-by-Step Process
-
-### Phase 1: Preparation (Week 1-2)
-- Gathering tools and resources
-- Creating your support system
-- Environmental setup for success
-- Initial habit establishment
-
-### Phase 2: Implementation (Week 3-8)
-- Daily practices and routines
-- Weekly check-ins and adjustments
-- Troubleshooting common obstacles
-- Building momentum and consistency
-
-### Phase 3: Integration (Week 9-12)
-- Long-term sustainability strategies
-- Advanced techniques and refinements
-- Creating accountability systems
-- Preparing for life transitions
-
-## Part 3: Advanced Strategies
-
-### Customizing Your Approach
-- Adapting for different lifestyles
-- Working with time constraints
-- Modifying for health considerations
-- Personalizing for maximum effectiveness
-
-### Troubleshooting Guide
-- What to do when motivation wanes
-- Handling setbacks and plateaus
-- Adjusting expectations realistically
-- Finding support when you need it
-
-## Part 4: Resources and Tools
-
-### Essential Tools
-- Apps and technology that help
-- Books and educational resources
-- Professional support options
-- Community and group resources
-
-### Quick Reference Guides
-- Daily practice checklists
-- Weekly planning templates
-- Monthly review questions
-- Emergency motivation toolkit
-
-## Conclusion: Your Ongoing Journey
-Remember, this is not a destination but an ongoing journey of growth and discovery. Be patient with yourself, celebrate small wins, and trust the process.
-
-**Your Next Steps:**
-1. Complete the initial assessment
-2. Choose your first week's focus
-3. Set up your support system
-4. Begin with day one practices
-
-*You've got this! Every expert was once a beginner, and every journey starts with a single step.*
-        """
-    
-    def _generate_lifestyle_advice(self, message: str) -> str:
-        """Generate personalized lifestyle advice"""
-        return f"""
-**Lifestyle Coaching Response**
-
-Thank you for sharing that with me. I can hear in your message that you're seeking some guidance and support, and I'm honored to be part of your journey.
-
-## What I'm Hearing
-From what you've shared, it sounds like you're navigating some important questions about {message.lower()}. This is such a valuable place to be - when we pause to reflect and seek guidance, we're already taking care of ourselves.
-
-## Some Gentle Thoughts to Consider
-
-**Remember Your Wisdom:** You already have so much wisdom within you. Sometimes we just need someone to help us access it and trust it.
-
-**Progress, Not Perfection:** Whatever you're working on, remember that small, consistent steps often create more lasting change than dramatic overhauls.
-
-**Your Unique Path:** What works for others might not work exactly the same way for you, and that's perfectly okay. Trust yourself to adapt advice to fit your life.
-
-## Practical Steps You Might Try
-
-1. **Start Small:** Choose one tiny step you can take today
-2. **Be Curious:** Notice what feels good and what doesn't, without judgment
-3. **Practice Self-Compassion:** Treat yourself with the same kindness you'd show a good friend
-4. **Seek Support:** Whether that's friends, family, or professionals - you don't have to do this alone
-
-## Questions for Reflection
-
-- What would self-care look like for you right now?
-- If you trusted yourself completely, what would you do?
-- What's one thing you're grateful for in this moment?
-- How can you honor both your needs and your growth?
-
-## Moving Forward
-
-Remember, there's no rush. Life is not a race, and your journey is uniquely yours. Whatever you're facing, you have the strength to navigate it, one day at a time.
-
-**Is there a specific aspect you'd like to explore further?** I'm here to support you in whatever way feels most helpful.
-
-*Sending you encouragement and believing in your ability to create positive change in your life.*
-        """
+        # Detect seasonal content requests
+        elif any(season in prompt_lower for season in ["spring", "summer", "fall", "autumn", "winter", "seasonal", "holiday"]):
+            # Extract season
+            season = "current season"
+            seasons = ["spring", "summer", "fall", "autumn", "winter"]
+            for s in seasons:
+                if s in prompt_lower:
+                    season = s
+                    break
+            return self.create_seasonal_content(season)
+        
+        # Detect guide requests
+        elif "guide" in prompt_lower or "comprehensive" in prompt_lower or "complete guide" in prompt_lower:
+            return self.create_lifestyle_guide(prompt)
+        
+        # Detect chat/conversation requests
+        elif "chat" in prompt_lower or "advice" in prompt_lower or "help me" in prompt_lower:
+            return self.chat_lifestyle_advice(prompt)
+        
+        # Default to blog post generation
+        else:
+            # Detect style
+            style = "casual"  # default
+            if "formal" in prompt_lower or "professional" in prompt_lower:
+                style = "formal"
+            elif "inspirational" in prompt_lower or "motivational" in prompt_lower:
+                style = "inspirational"
+            elif "conversational" in prompt_lower:
+                style = "conversational"
+            
+            # Detect length
+            length = "medium"  # default
+            if "short" in prompt_lower or "brief" in prompt_lower:
+                length = "short"
+            elif "long" in prompt_lower or "detailed" in prompt_lower or "comprehensive" in prompt_lower:
+                length = "long"
+            
+            # Detect focus area
+            focus_area = "general"  # default
+            focus_areas = ["wellness", "productivity", "relationships", "personal_growth", "mindfulness", "fitness"]
+            for area in focus_areas:
+                if area in prompt_lower or area.replace("_", " ") in prompt_lower:
+                    focus_area = area
+                    break
+            
+            return self.generate_lifestyle_blog_post(prompt, style, length, focus_area)
