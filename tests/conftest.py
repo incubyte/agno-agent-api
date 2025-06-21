@@ -36,6 +36,58 @@ class MockAgentService:
                 "prompt": "Test prompt for agent 1"
             }
         return None
+    
+    def create_agent(self, agent):
+        """Mock agent creation"""
+        return {
+            "id": 1,
+            "name": agent.name,
+            "slug": agent.slug,
+            "description": agent.description,
+            "image": agent.image,
+            "created_at": "2024-01-01T00:00:00",
+            "updated_at": "2024-01-01T00:00:00"
+        }
+    
+    def run_agent_by_id(self, agent_id: int, prompt: str, user_email: str):
+        """Mock agent execution"""
+        if not prompt:
+            raise ValueError("Prompt must not be empty")
+        if not user_email:
+            raise ValueError("User email must not be empty")
+        return f"Mocked response to '{prompt}' for agent {agent_id}"
+    
+    def update_agent(self, agent_id: int, updated_data: dict):
+        """Mock agent update"""
+        if agent_id == 999:
+            return None  # Simulate agent not found
+        return {
+            "id": agent_id,
+            "name": updated_data.get("name", "Test Agent"),
+            "slug": "test-agent",
+            "description": updated_data.get("description"),
+            "updated_at": "2024-01-01T00:00:00"
+        }
+    
+    def delete_agent(self, agent_id: int):
+        """Mock agent deletion"""
+        if agent_id == 999:
+            return False  # Simulate agent not found
+        return True
+    
+    def get_agent_by_slug(self, slug: str):
+        """Mock get agent by slug"""
+        if slug == "test-agent-1":
+            return {"id": 1, "name": "Test Agent 1", "slug": "test-agent-1"}
+        return None
+    
+    def agent_exists_by_slug(self, slug: str):
+        """Mock check agent exists"""
+        return slug == "test-agent-1"
+    
+    def get_agent_count(self):
+        """Mock get agent count"""
+        return 2
 
 
 class MockPdfService:
@@ -125,6 +177,108 @@ class MockLinkedinWriterAgent:
 
 
 # =============================================================================
+# ENHANCED MOCKS FOR AGENT ROUTER E2E TESTS
+# =============================================================================
+
+class MockAgentRepository:
+    """Mock for AgentRepository to simulate database operations"""
+    
+    def __init__(self):
+        self.agents = {}
+        self.next_id = 1
+    
+    def get_all(self):
+        return list(self.agents.values())
+    
+    def get_by_id(self, agent_id: int):
+        return self.agents.get(agent_id)
+    
+    def create(self, agent):
+        agent.id = self.next_id
+        agent.created_at = "2024-01-01T00:00:00"
+        agent.updated_at = "2024-01-01T00:00:00"
+        self.agents[self.next_id] = agent
+        self.next_id += 1
+        return agent
+    
+    def update(self, agent):
+        if agent.id in self.agents:
+            agent.updated_at = "2024-01-01T00:00:00"
+            self.agents[agent.id] = agent
+            return agent
+        return None
+    
+    def delete(self, agent_id: int):
+        if agent_id in self.agents:
+            del self.agents[agent_id]
+            return True
+        return False
+    
+    def get_by_slug(self, slug: str):
+        for agent in self.agents.values():
+            if agent.slug == slug:
+                return agent
+        return None
+    
+    def exists_by_slug(self, slug: str):
+        return any(agent.slug == slug for agent in self.agents.values())
+    
+    def count(self):
+        return len(self.agents)
+
+
+class MockAgentFactory:
+    """Mock for AgentFactory to avoid external API calls"""
+    
+    @staticmethod
+    def get_agent(agent_type):
+        """Return a mock agent that simulates AI responses"""
+        class MockAIAgent:
+            def get_response(self, prompt: str) -> str:
+                return f"Mocked AI response to: {prompt}"
+        
+        return MockAIAgent()
+
+
+class EnhancedMockAgentService(MockAgentService):
+    """Enhanced mock for comprehensive agent router testing"""
+    
+    def __init__(self):
+        super().__init__()
+        self.repository = MockAgentRepository()
+        self.call_log = []  # Track method calls for verification
+    
+    def get_all_agents(self):
+        self.call_log.append("get_all_agents")
+        agents = self.repository.get_all()
+        if not agents:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="No agents found")
+        return agents
+    
+    def get_agent_by_id(self, agent_id: int):
+        self.call_log.append(f"get_agent_by_id({agent_id})")
+        agent = self.repository.get_by_id(agent_id)
+        if not agent:
+            return None
+        return {
+            "agent": agent,
+            "prompt": f"Prompt for {agent.slug}"
+        }
+    
+    def create_agent(self, agent):
+        self.call_log.append(f"create_agent({agent.name})")
+        # Simulate validation
+        if not agent.name or not agent.slug:
+            raise ValueError("Agent name and slug are required")
+        
+        if self.repository.exists_by_slug(agent.slug):
+            raise ValueError(f"Agent with slug '{agent.slug}' already exists")
+        
+        return self.repository.create(agent)
+
+
+# =============================================================================
 # PYTEST FIXTURES
 # =============================================================================
 
@@ -176,6 +330,24 @@ def mock_linkedin_writer_agent():
     return MockLinkedinWriterAgent()
 
 
+@pytest.fixture
+def enhanced_mock_agent_service():
+    """Fixture providing an enhanced mock AgentService for comprehensive testing"""
+    return EnhancedMockAgentService()
+
+
+@pytest.fixture
+def mock_agent_repository():
+    """Fixture providing a mock AgentRepository instance"""
+    return MockAgentRepository()
+
+
+@pytest.fixture
+def mock_agent_factory():
+    """Fixture providing a mock AgentFactory instance"""
+    return MockAgentFactory()
+
+
 # =============================================================================
 # TEST CLIENT FIXTURES
 # =============================================================================
@@ -200,6 +372,26 @@ def test_client_with_mocks(mock_agent_service, mock_email_service, mock_pdf_serv
     app.dependency_overrides[AgentService] = lambda: mock_agent_service
     app.dependency_overrides[EmailService] = lambda: mock_email_service
     app.dependency_overrides[PdfService] = lambda: mock_pdf_service
+    
+    client = TestClient(app)
+    
+    yield client
+    
+    # Clean up dependency overrides
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def test_client_for_agent_router():
+    """Fixture providing a TestClient specifically configured for agent router testing"""
+    from app.main import app
+    from app.service.agent_service import AgentService
+    
+    # Create enhanced mock for agent router tests
+    enhanced_mock = MockAgentService()
+    
+    # Override only the AgentService dependency
+    app.dependency_overrides[AgentService] = lambda: enhanced_mock
     
     client = TestClient(app)
     
