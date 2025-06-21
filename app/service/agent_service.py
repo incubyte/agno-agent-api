@@ -30,24 +30,18 @@ class AgentService:
 
     def get_agent_by_id(self, agent_id: int) -> Optional[Agent]:
         """Get a specific agent by ID"""
-        try:
-            agent = self.agent_repository.get_by_id(agent_id)
-            if not agent:
-                raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
-            prompt = self.get_prompt(agent.slug)  
-            return {
-                "agent": agent,
-                "prompt": prompt
-            }
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to retrieve agent with ID {agent_id}: {str(e)}")
+        agent = self.agent_repository.get_by_id(agent_id)
+        if not agent:
+            raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+        return agent
+     
         
         
-    def get_prompt(self, slug: str) -> Optional[str]:
+    def get_prompt(self, slug: AgentType) -> Optional[str]:
         """Get the prompt for a specific agent by slug"""
-        prompt = agent_prompt_repository.get(AgentType(slug))
+        prompt = agent_prompt_repository.get(slug)
         if not prompt:
-            raise HTTPException(status_code=404, detail=f"Prompt for agent with slug '{slug}' not found")
+            return "Enter your prompt here"
         return prompt
 
     def create_agent(self, agent: Agent) -> Agent:
@@ -76,12 +70,10 @@ class AgentService:
                 raise ValueError("User email must not be empty")
             
             # Get agent data from repository
-            agent_data = self.get_agent_by_id(agent_id)
-            if not agent_data:
-                raise ValueError(f"Agent with ID {agent_id} not found")
-            print(agent_data["agent"].slug)
-            # Get the appropriate agent from factory
-            agent = AgentFactory.get_agent(AgentType(agent_data["agent"].slug))
+            agent = self.get_agent_by_id(agent_id)
+            if not agent:
+                raise  HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+            agent = AgentFactory.get_agent(AgentType(agent.slug))
 
             # Generate response
             response = agent.get_response(prompt)
@@ -95,27 +87,24 @@ class AgentService:
 
     def update_agent(self, agent_id: int, updated_data: dict) -> Optional[Agent]:
         """Update an existing agent"""
-        try:
-            agent = self.get_agent_by_id(agent_id)
-            if not agent:
-                raise ValueError(f"Agent with ID {agent_id} not found")
+        agent = self.get_agent_by_id(agent_id)
+        if not agent:
+            raise  HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
             
             # Update agent fields
-            for key, value in updated_data.items():
-                if hasattr(agent, key):
-                    setattr(agent, key, value)
+        for key, value in updated_data.items():
+            if hasattr(agent, key):
+                setattr(agent, key, value)
             
             # Use the repository update method
-            return self.agent_repository.update(agent)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to update agent: {str(e)}")
+        return self.agent_repository.update(agent)
 
-    def delete_agent(self, agent_id: int) -> bool:
+    def delete_agent(self, agent_id: int) -> Agent:
         """Delete an agent"""
-        try:
-            return self.agent_repository.delete(agent_id)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to delete agent: {str(e)}")
+        agent = self.get_agent_by_id(agent_id)
+        if not agent:
+            raise HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+        return self.agent_repository.delete(agent)
 
     def get_agent_by_slug(self, slug: str) -> Optional[Agent]:
         """Get an agent by slug"""
@@ -131,9 +120,9 @@ class AgentService:
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Failed to check agent existence: {str(e)}")
 
-    def get_agent_count(self) -> int:
+    def get_agent_count(self) -> dict:
         """Get the total count of agents"""
         try:
-            return self.agent_repository.count()
+            return self.agent_repository.agent_count()
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Failed to get agent count: {str(e)}")

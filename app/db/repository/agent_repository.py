@@ -34,14 +34,11 @@ class AgentRepository:
         session.refresh(agent)
         return agent
 
-    def delete(self, agent_id: int) -> bool:
+    def delete(self, agent: Agent) -> Agent:
         """Delete an agent by ID"""
-        agent = session.get(Agent, agent_id)
-        if agent:
-            session.delete(agent)
-            session.commit()
-            return True
-        return False
+        session.delete(agent)
+        session.commit()
+        return agent
 
     def exists_by_slug(self, slug: str) -> bool:
         """Check if an agent with the given slug exists"""
@@ -49,7 +46,7 @@ class AgentRepository:
         result = session.exec(statement).first()
         return result is not None
 
-    def count(self) -> int:
+    def agent_count(self) ->  dict:
         """Count total number of agents"""
         statement = select(Agent)
-        return len(session.exec(statement).all())
+        return {"count": len(session.exec(statement).all())}
