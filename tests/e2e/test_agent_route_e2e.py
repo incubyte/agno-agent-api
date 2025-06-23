@@ -5,7 +5,6 @@ Tests all endpoints in app/routers/agent.py with real database and service inter
 import pytest
 import os
 import sys
-from fastapi.testclient import TestClient
 
 # Import the app - path setup is handled in conftest.py
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -72,21 +71,17 @@ class TestAgentRouterE2E:
 
     def test_get_agent_by_id_success(self, e2e_test_client, sample_agent_data):
         """Test GET /agents/{agent_id} - Success scenario"""
-        # First create an agent
-        agent = Agent(**sample_agent_data)
-        agent.slug = "test-by-id" # Unique slug
-        create_response = e2e_test_client.post("/create-agent", json=self._get_serializable_agent_data(agent))
-        assert create_response.status_code == 200
-        agent_id = create_response.json()["id"]
-        print(f"Created agent with ID: {agent_id}")
-        # Get agent by ID
+        agent_id = 1  # Assuming this ID exists in the seeded data
+        # refer the seed.py file for the seeded data
+
+        # Get agent by ID which already exists in the database
         response = e2e_test_client.get(f"/agents/{agent_id}")
         print("Get agent response:", response.json())
         
         assert response.status_code == 200
         agent_data = response.json()
         assert agent_data["agent"]["id"] == agent_id
-        assert agent_data["agent"]["name"] == sample_agent_data["name"]
+        assert agent_data["agent"]["name"] == "Marketing Agent"
 
     def test_get_agent_by_id_not_found(self, e2e_test_client):
         """Test GET /agents/{agent_id} - Error scenario: agent not found"""

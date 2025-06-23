@@ -39,7 +39,7 @@ class AgentService:
         
     def get_prompt(self, slug: AgentType) -> Optional[str]:
         """Get the prompt for a specific agent by slug"""
-        prompt = agent_prompt_repository.get(slug)
+        prompt = agent_prompt_repository.get(AgentType(slug))
         if not prompt:
             return "Enter your prompt here"
         return prompt
