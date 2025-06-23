@@ -46,19 +46,16 @@ class AgentService:
 
     def create_agent(self, agent: Agent) -> Agent:
         """Create a new agent"""
-        try:
             # Add any business logic validation here
-            if not agent.name or not agent.slug:
-                raise ValueError("Agent name and slug are required")
+        if not agent.name or not agent.slug:
+            raise ValueError("Agent name and slug are required")
             
             # Check if agent with same slug already exists
-            if self.agent_repository.exists_by_slug(agent.slug):
-                raise ValueError(f"Agent with slug '{agent.slug}' already exists")
-            
-            created_agent = self.agent_repository.create(agent)
-            return created_agent
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to create agent: {str(e)}")
+        if self.agent_repository.exists_by_slug(agent.slug):
+            raise ValueError(f"Agent with slug '{agent.slug}' already exists")
+
+        created_agent = self.agent_repository.create(agent)
+        return created_agent
 
     def run_agent_by_id(self, agent_id: int, prompt: str, user_email: str) -> str:
         """Run an agent by ID with the given prompt"""
@@ -108,10 +105,10 @@ class AgentService:
 
     def get_agent_by_slug(self, slug: str) -> Optional[Agent]:
         """Get an agent by slug"""
-        try:
-            return self.agent_repository.get_by_slug(slug)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to retrieve agent with slug {slug}: {str(e)}")
+        agent = self.agent_repository.get_by_slug(slug)
+        if not agent:
+            raise HTTPException(status_code=404, detail=f"Agent with slug {slug} not found")
+        return agent
 
     def agent_exists_by_slug(self, slug: str) -> bool:
         """Check if an agent exists with the given slug"""

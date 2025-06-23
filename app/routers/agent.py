@@ -49,12 +49,9 @@ class AgentRouter:
     @router.post("/create-agent")
     def create_agent(self, agent: Agent):
         """Create a new agent"""
-        try:
-            created_agent = self.agent_service.create_agent(agent)
-            print(f"Created agent: {created_agent}")
-            return created_agent
-        except ValueError as ve:
-            raise HTTPException(status_code=400, detail=str(ve))
+        created_agent = self.agent_service.create_agent(agent)
+        return created_agent
+
 
     @router.post("/run-agent/{agent_id}")
     def run_agent_by_id(self, agent_id: int, request: AgentRequest):

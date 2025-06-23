@@ -250,7 +250,7 @@ class TestAgentRouterE2E:
         response = e2e_test_client.get(f"/agents/slug/{non_existent_slug}")
         
         assert response.status_code == 404
-        assert f"Agent with slug '{non_existent_slug}' not found" in response.json()["detail"]
+        assert f"Agent with slug {non_existent_slug} not found" in response.json()["detail"]
 
     # =============================================================================
     # GET /agents/count - Get agent count
