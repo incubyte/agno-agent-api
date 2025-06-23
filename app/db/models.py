@@ -2,6 +2,8 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
+from pydantic import model_serializer
+
 
 class Agent(SQLModel, table=True):
     __tablename__ = "agents"
@@ -16,5 +18,17 @@ class Agent(SQLModel, table=True):
 
     def __repr__(self):
         return f"<Agent(id={self.id}, name={self.name})>"
+    
+    @model_serializer()
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "slug": self.slug,
+            "description": self.description,
+            "image": self.image,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+        }
 
         
