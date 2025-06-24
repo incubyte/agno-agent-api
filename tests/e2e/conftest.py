@@ -177,7 +177,10 @@ def setup_e2e_test_environment():
     # Phase B: Database creation and initialization
     engine = _create_test_database()
     print("Test database ready for E2E tests")
-    
+
+    if "sqlite:///test.db" not in db_url:
+        pytest.exit("❌ Invalid database URL. Expected 'sqlite:///test.db' for test environment.", returncode=1)
+
     yield engine
     
     # Phase C: Complete cleanup

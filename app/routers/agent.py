@@ -4,7 +4,6 @@ from fastapi_utils.cbv import cbv
 
 from app.service.agent_service import AgentService
 from app.service import PdfService, EmailService
-from app.agents.marketing_agents import MarketingAgent
 from app.db.models import Agent
 
 
