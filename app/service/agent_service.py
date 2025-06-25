@@ -57,30 +57,27 @@ class AgentService:
         created_agent = self.agent_repository.create(agent)
         return created_agent
 
-    def run_agent_by_id(self, agent_id: int, prompt: str, user_email: str) -> str:
+    def run_agent_by_id(self, agent_id: int, prompt: str, user_email: Optional[str]) -> str:
         """Run an agent by ID with the given prompt"""
-        try:
+        
             # Validate inputs
-            if not prompt:
-                raise ValueError("Prompt must not be empty")
-            if not user_email:
-                raise ValueError("User email must not be empty")
+        if not prompt:
+            raise ValueError("Prompt must not be empty")
             
             # Get agent data from repository
-            agent = self.get_agent_by_id(agent_id)
-            if not agent:
-                raise  HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
-            agent = AgentFactory.get_agent(AgentType(agent.slug))
+        agent = self.get_agent_by_id(agent_id)
+        if not agent:
+            raise  HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
+        agent = AgentFactory.get_agent(AgentType(agent.slug))
 
             # Generate response
-            response = agent.get_response(prompt)
+        response = agent.get_response(prompt)
             
             # Clean up response
-            clean_response = textwrap.dedent(response).lstrip()
+        clean_response = textwrap.dedent(response).lstrip()
             
-            return clean_response
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to run agent: {str(e)}")
+        return clean_response
+        
 
     def update_agent(self, agent_id: int, updated_data: dict) -> Optional[Agent]:
         """Update an existing agent"""
