@@ -7,6 +7,7 @@ class Setting(BaseSettings):
     ANTHROPIC_API_KEY: str
     AGENT_STORAGE: str
     DATABASE_URL: str
+    ALLOWED_ORIGINS: list[str] 
 
     class Config:
         env_file = ".env"

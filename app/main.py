@@ -9,6 +9,7 @@ import asyncio
 import sys
 import signal
 import os
+from app.core import settings
 
 # Handle Windows event loop policy for Playwright/Crawl4AI compatibility
 if sys.platform == "win32":
@@ -43,7 +44,7 @@ app.include_router(agent_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://illustrious-pasca-7cb1b5.netlify.app"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
