@@ -5,6 +5,7 @@ from fastapi_utils.cbv import cbv
 from app.service.agent_service import AgentService
 from app.service import PdfService, EmailService
 from app.db.models import Agent
+from typing import Optional
 
 
 router = APIRouter()
@@ -12,7 +13,7 @@ router = APIRouter()
 
 class AgentRequest(BaseModel):
     prompt: str
-    user_email: str
+    user_email: Optional[str]
 
 @cbv(router)
 class AgentRouter:
