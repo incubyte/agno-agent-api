@@ -1,54 +1,20 @@
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from app.routers import index_router
-from app.routers import agent_router
-from app.db.engine import engine
-from sqlmodel import SQLModel
-from fastapi.middleware.cors import CORSMiddleware
+"""
+Main application module with enhanced error handling and validation.
+Uses the new setup system while preserving existing functionality.
+"""
+
+from app.core.setup import create_application
 import asyncio
 import sys
 import signal
 import os
-from app.core import settings
 
 # Handle Windows event loop policy for Playwright/Crawl4AI compatibility
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
-
-# Modern lifespan context manager to replace deprecated on_event
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("Starting up agno-ai-api...")
-    
-    # Create database tables
-    SQLModel.metadata.create_all(bind=engine)
-    
-    # Add any other startup code here
-    
-    yield  # This is where the application runs
-    
-    # Shutdown code
-    print("Shutting down gracefully...")
-    # Add any cleanup code here if needed
-    # For example: closing database connections, cleaning up resources, etc.
-
-
-# Initialize FastAPI with lifespan
-app = FastAPI(lifespan=lifespan)
-
-# Include routers
-app.include_router(index_router)
-app.include_router(agent_router)
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Create the application using the new setup system
+app = create_application()
 
 # Signal handler for graceful shutdown (Windows ProactorEventLoop compatible)
 def signal_handler(signum, frame):
@@ -81,7 +47,7 @@ else:
 
 
 def main():
-    print("Hello from agno-ai-api!")
+    print("Hello from agno-ai-api with enhanced error handling!")
 
 
 if __name__ == "__main__":

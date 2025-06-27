@@ -1,7 +1,7 @@
 [project]
 name = "agno-ai-api"
 version = "0.1.0"
-description = "Add your description here"
+description = "Enhanced Marketing Agents API with comprehensive error handling and validation"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -23,6 +23,9 @@ dependencies = [
     "uvicorn>=0.34.2",
     "weasyprint>=65.1",
     "yfinance>=0.2.59",
+    # Additional dependencies for enhanced error handling
+    "email-validator>=2.0.0",
+    "python-multipart>=0.0.6",
 ]
 
 [dependency-groups]
