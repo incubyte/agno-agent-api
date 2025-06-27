@@ -37,9 +37,9 @@ class AgentService:
      
         
         
-    def get_prompt(self, slug: AgentType) -> Optional[str]:
+    def get_prompt(self, slug: str) -> Optional[str]:
         """Get the prompt for a specific agent by slug"""
-        prompt = agent_prompt_repository.get(AgentType(slug))
+        prompt = agent_prompt_repository.get(slug)
         if not prompt:
             return "Enter your prompt here"
         return prompt
@@ -68,7 +68,7 @@ class AgentService:
         agent = self.get_agent_by_id(agent_id)
         if not agent:
             raise  HTTPException(status_code=404, detail=f"Agent with ID {agent_id} not found")
-        agent = AgentFactory.get_agent(AgentType(agent.slug))
+        agent = AgentFactory.get_agent(agent.slug)
 
             # Generate response
         response = agent.get_response(prompt)

@@ -4,21 +4,21 @@ from app.agents.ai_agent import AIAgent
 from app.agents.linkedin_writer_agent import LinkedInWriterAgent
 from app.agents.tech_blog_writer_agent import TechBlogWriterAgent
 from app.agents.lifestyle_blog_writer_agent import LifestyleBlogWriterAgent
-from app.agents.enum.agent_enum import AgentType
 
 
 class AgentFactory:
     _agents = {
-        AgentType.MARKETING_AGENT: MarketingAgent,
-        AgentType.AI_AGENT: AIAgent,
-        AgentType.LINKEDIN_WRITER_AGENT: LinkedInWriterAgent,
-        AgentType.TECH_BLOG_WRITER_AGENT: TechBlogWriterAgent,
-        AgentType.LIFESTYLE_BLOG_WRITER_AGENT: LifestyleBlogWriterAgent,
+        "marketing-agent": MarketingAgent,
+        "ai-agent": AIAgent,
+        "linkedin-writer-agent": LinkedInWriterAgent,
+        "tech-blog-writer-agent": TechBlogWriterAgent,
+        "lifestyle-blog-writer-agent": LifestyleBlogWriterAgent,
     }
 
     @staticmethod
-    def get_agent(agent_type: AgentType) -> BaseAgent:
-        agent_class = AgentFactory._agents.get(agent_type)
+    def get_agent(agent_slug: str) -> BaseAgent:
+        agent_class = AgentFactory._agents.get(agent_slug)
         if not agent_class:
-            raise ValueError(f"No agent found for type: {agent_type}")
+            # Default to AIAgent for unknown types
+            return AIAgent()
         return agent_class()
