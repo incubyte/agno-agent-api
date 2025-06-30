@@ -3,7 +3,7 @@ from agno.models.anthropic import Claude
 from agno.tools.reasoning import ReasoningTools
 from agno.tools.yfinance import YFinanceTools
 from app.agents.base_agent import BaseAgent
-from app.core import settings
+from app.core.setting import settings
 
 
 tools=[
