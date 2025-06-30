@@ -13,7 +13,7 @@ router = APIRouter()
 
 class AgentRequest(BaseModel):
     prompt: str
-    user_email: Optional[str]
+    user_email: str
 
 @cbv(router)
 class AgentRouter:

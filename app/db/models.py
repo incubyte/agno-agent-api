@@ -1,8 +1,10 @@
 from datetime import datetime
+import uuid
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
 from pydantic import model_serializer
+from pydantic import EmailStr
 
 
 class Agent(SQLModel, table=True):
@@ -30,5 +32,22 @@ class Agent(SQLModel, table=True):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
+    
+class UserAgentRun(SQLModel, table=True):
+    __tablename__ = "user_agent_runs"
 
-        
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    email: EmailStr = Field(max_length=255, nullable=False)
+    agent_id: int = Field(default=None, foreign_key="agents.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<UserAgentRun(id={self.id}, email={self.email}, agent_id={self.agent_id})>"
+
+    @model_serializer()
+    def serialize(self):
+        return {
+            "id": str(self.id),
+            "email": self.email,
+            "agent_id": self.agent_id,
+        }
