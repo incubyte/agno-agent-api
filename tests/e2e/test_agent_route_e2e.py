@@ -289,3 +289,122 @@ class TestAgentRouterE2E:
         exists_data = response.json()
         assert "exists" in exists_data
         assert exists_data["exists"] is False
+    
+    # =============================================================================
+    # New SEO and Marketing Agents E2E Tests
+    # =============================================================================
+    
+    def test_website_audit_agent_exists(self, e2e_test_client):
+        """Test that website audit agent exists in database"""
+        response = e2e_test_client.get("/agents/slug/website-audit")
+        assert response.status_code == 200
+        agent_data = response.json()
+        assert agent_data["slug"] == "website-audit"
+        assert agent_data["name"] == "Website Performance Auditor"
+
+    def test_seo_audit_agent_exists(self, e2e_test_client):
+        """Test that SEO audit agent exists in database"""
+        response = e2e_test_client.get("/agents/slug/seo-audit")
+        assert response.status_code == 200
+        agent_data = response.json()
+        assert agent_data["slug"] == "seo-audit"
+        assert agent_data["name"] == "SEO Auditor Agent"
+
+    def test_marketing_copy_agent_exists(self, e2e_test_client):
+        """Test that marketing copy agent exists in database"""
+        response = e2e_test_client.get("/agents/slug/marketing-copy")
+        assert response.status_code == 200
+        agent_data = response.json()
+        assert agent_data["slug"] == "marketing-copy"
+        assert agent_data["name"] == "Marketing Copywriter Agent"
+
+    @pytest.mark.skipif(
+        os.environ.get("SKIP_EXTERNAL_CALLS", "true").lower() == "true",
+        reason="Skipping tests that make external API calls"
+    )
+    def test_run_website_audit_agent(self, e2e_test_client):
+        """Test running website audit agent"""
+        # Get agent by slug
+        agent_response = e2e_test_client.get("/agents/slug/website-audit")
+        assert agent_response.status_code == 200
+        agent_id = agent_response.json()["id"]
+        
+        # Run agent with website URL
+        request_data = {
+            "prompt": "https://example.com",
+            "user_email": "test@example.com"
+        }
+        response = e2e_test_client.post(f"/run-agent/{agent_id}", json=request_data)
+        assert response.status_code == 200
+        response_data = response.json()
+        assert "response" in response_data
+        assert isinstance(response_data["response"], str)
+        assert len(response_data["response"]) > 0
+
+    @pytest.mark.skipif(
+        os.environ.get("SKIP_EXTERNAL_CALLS", "true").lower() == "true",
+        reason="Skipping tests that make external API calls"
+    )
+    def test_run_seo_audit_agent(self, e2e_test_client):
+        """Test running SEO audit agent"""
+        # Get agent by slug
+        agent_response = e2e_test_client.get("/agents/slug/seo-audit")
+        assert agent_response.status_code == 200
+        agent_id = agent_response.json()["id"]
+        
+        # Run agent with website URL and keywords
+        request_data = {
+            "prompt": "https://example.com keywords: seo, marketing, optimization",
+            "user_email": "test@example.com"
+        }
+        response = e2e_test_client.post(f"/run-agent/{agent_id}", json=request_data)
+        assert response.status_code == 200
+        response_data = response.json()
+        assert "response" in response_data
+        assert isinstance(response_data["response"], str)
+        assert len(response_data["response"]) > 0
+
+    @pytest.mark.skipif(
+        os.environ.get("SKIP_EXTERNAL_CALLS", "true").lower() == "true",
+        reason="Skipping tests that make external API calls"
+    )
+    def test_run_marketing_copy_agent(self, e2e_test_client):
+        """Test running marketing copy agent"""
+        # Get agent by slug
+        agent_response = e2e_test_client.get("/agents/slug/marketing-copy")
+        assert agent_response.status_code == 200
+        agent_id = agent_response.json()["id"]
+        
+        # Run agent with website URL and audience info
+        request_data = {
+            "prompt": "https://example.com audience: tech startups, SaaS companies",
+            "user_email": "test@example.com"
+        }
+        response = e2e_test_client.post(f"/run-agent/{agent_id}", json=request_data)
+        assert response.status_code == 200
+        response_data = response.json()
+        assert "response" in response_data
+        assert isinstance(response_data["response"], str)
+        assert len(response_data["response"]) > 0
+
+    def test_new_agents_count_in_total(self, e2e_test_client):
+        """Test that the new agents are included in the total count"""
+        response = e2e_test_client.get("/agents/count")
+        assert response.status_code == 200
+        count_data = response.json()
+        # Should include the 3 new agents plus existing ones (11 total from seed)
+        assert count_data["count"] >= 11
+
+    def test_new_agents_in_agents_list(self, e2e_test_client):
+        """Test that the new agents appear in the agents list"""
+        response = e2e_test_client.get("/agents")
+        assert response.status_code == 200
+        agents = response.json()
+        
+        # Extract slugs from agents list
+        agent_slugs = [agent["slug"] for agent in agents]
+        
+        # Verify new agents are present
+        assert "website-audit" in agent_slugs
+        assert "seo-audit" in agent_slugs
+        assert "marketing-copy" in agent_slugs

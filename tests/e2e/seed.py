@@ -67,6 +67,26 @@ def seed_test_database(engine):
                     image="ai-agent.png"
                 ),
                 
+                # New SEO and Marketing Agents
+                Agent(
+                    name="Website Performance Auditor",
+                    slug="website-audit",  # Matches AgentType.WEBSITE_PERFORMANCE_AUDITOR
+                    description="Comprehensive website effectiveness benchmark with SEO insights and optimization recommendations. Analyzes technical performance, SEO foundation, business messaging, and conversion metrics.",
+                    image="website-audit.svg"
+                ),
+                Agent(
+                    name="SEO Auditor Agent",
+                    slug="seo-audit",  # Matches AgentType.SEO_AUDIT
+                    description="Deep SEO analysis identifying keyword gaps and high-value optimization opportunities. Provides keyword research, content gap analysis, and technical SEO recommendations.",
+                    image="seo-audit.svg"
+                ),
+                Agent(
+                    name="Marketing Copywriter Agent",
+                    slug="marketing-copy",  # Matches AgentType.MARKETING_COPYWRITER_AGENT
+                    description="AI-powered copywriting team creating conversion-optimized content for different audience segments. Includes audience research, messaging strategy, and copy optimization.",
+                    image="marketing-copy.svg"
+                ),
+                
                 # Edge case agents for testing various scenarios (these will cause prompt errors but are useful for other tests)
                 Agent(
                     name="Test Agent with Long Name for Boundary Testing",
@@ -98,7 +118,7 @@ def seed_test_database(engine):
             agent_count = session.execute(text("SELECT COUNT(*) FROM agents")).fetchone()[0]
             print(f"Successfully seeded {agent_count} agents to test database")
             
-            return len(sample_agents)  # Returns 8 agents total
+            return len(sample_agents)  # Returns 11 agents total
             
     except ImportError as e:
         print(f"Could not import models: {e}")
@@ -145,13 +165,16 @@ def get_seeded_data_info():
             {"slug": "linkedin-writer-agent", "name": "LinkedIn Writer Agent"},
             {"slug": "lifestyle-blog-writer-agent", "name": "Lifestyle Blog Writer Agent"},
             {"slug": "ai-agent", "name": "AI Agent"},
+            {"slug": "website-audit", "name": "Website Performance Auditor"},
+            {"slug": "seo-audit", "name": "SEO Auditor Agent"},
+            {"slug": "marketing-copy", "name": "Marketing Copywriter Agent"},
         ],
         "edge_case_agents": [
             {"slug": "test-long-name-agent", "name": "Test Agent with Long Name for Boundary Testing"},
             {"slug": "special-chars-agent", "name": "Special-Chars-Agent!@#"},
             {"slug": "minimal", "name": "Minimal Agent"},
         ],
-        "total_count": 8,
+        "total_count": 11,
         "test_scenarios": {
             "success_cases": ["marketing-agent", "tech-blog-writer-agent", "linkedin-writer-agent"],
             "edge_cases": ["test-long-name-agent", "special-chars-agent", "minimal"],
