@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: marketing-agents-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    plan: starter  # Change to free, starter, standard, or pro based on your needs
+    region: oregon  # Choose your preferred region
+    
+    # Environment variables for Render deployment
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHONPATH
+        value: /workspace
+      - key: PYTHONUNBUFFERED
+        value: 1
+      
+      # These will be set from your Render dashboard or external database
+      - key: DATABASE_URL
+        sync: false  # Set this manually in Render dashboard to your PostgreSQL URL
+      - key: ANTHROPIC_API_KEY
+        sync: false  # Set this manually in Render dashboard
+      - key: SENDER_EMAIL
+        sync: false  # Set this manually in Render dashboard
+      - key: SENDER_PASSWORD
+        sync: false  # Set this manually in Render dashboard
+      - key: AGENT_STORAGE
+        value: agents_storage.db
+      - key: ALLOWED_ORIGINS
+        value: '["https://your-frontend-domain.com","https://illustrious-pasca-7cb1b5.netlify.app"]'
+    
+    # Health check configuration
+    healthCheckPath: /
+    
+    # Auto-deploy on git push
+    autoDeploy: true
+    
+    # Disk storage for agent data and caches
+    disk:
+      name: marketing-agents-storage
+      mountPath: /workspace/data
+      sizeGB: 2

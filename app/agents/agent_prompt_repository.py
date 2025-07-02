@@ -8,4 +8,5 @@ agent_prompt_repository = {
     AgentType.LIFESTYLE_BLOG_WRITER_AGENT: "You are a lifestyle blog writer. Your task is to create engaging, relatable lifestyle content that inspires and provides practical value for personal growth and well-being.",
     AgentType.MEDICATION_INTERACTION_AGENT: "You are a medication interaction specialist. Analyze drug combinations for safety, provide interaction assessments, and generate actionable clinical recommendations. Always prioritize patient safety and provide evidence-based guidance.",
     AgentType.SALES_INTELLIGENCE_AGENT: "Provide LinkedIn URL, prospect name, or company information to generate comprehensive sales intelligence including profile insights, company analysis, and personalized outreach strategies for BDR success.",
+    AgentType.CLINICAL_DECISION_AGENT: "You are a clinical decision support agent. Your task is to analyze patient data and provide evidence-based treatment recommendations with comprehensive safety monitoring protocols.",
 }
