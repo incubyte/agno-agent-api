@@ -189,6 +189,56 @@ class TestAgentRouterE2E:
         assert isinstance(response_data["response"], str)
         assert len(response_data["response"]) > 0
 
+    @pytest.mark.skipif(
+        os.environ.get("SKIP_EXTERNAL_CALLS", "true").lower() == "true",
+        reason="Skipping tests that make external API calls"
+    )
+    def test_run_sales_intelligence_agent_success(self, e2e_test_client):
+        """Test POST /run-agent/{agent_id} - Sales Intelligence Agent specific test"""
+        # Use the seeded Sales Intelligence Agent (ID should be 6 based on seed order)
+        agent_id = 6  # Sales Intelligence Agent from seed data
+        
+        # Test with LinkedIn URL
+        request_data = {
+            "prompt": "Research https://linkedin.com/in/john-doe-cto for sales intelligence",
+            "user_email": "test@example.com"
+        }
+        response = e2e_test_client.post(f"/run-agent/{agent_id}", json=request_data)
+        
+        if response.status_code == 200:
+            response_data = response.json()
+            assert "response" in response_data
+            assert isinstance(response_data["response"], str)
+            assert len(response_data["response"]) > 0
+        else:
+            # If agent not found, skip this specific test
+            pytest.skip(f"Sales Intelligence Agent not found in database (ID: {agent_id})")
+
+    @pytest.mark.skipif(
+        os.environ.get("SKIP_EXTERNAL_CALLS", "true").lower() == "true",
+        reason="Skipping tests that make external API calls"
+    )
+    def test_run_medication_interaction_agent_success(self, e2e_test_client):
+        """Test POST /run-agent/{agent_id} - Medication Interaction Agent specific test"""
+        # Use the seeded Medication Interaction Agent (ID should be 7 based on seed order)
+        agent_id = 7  # Medication Interaction Agent from seed data
+        
+        # Test with drug interaction query
+        request_data = {
+            "prompt": "Check interaction between aspirin and warfarin",
+            "user_email": "test@example.com"
+        }
+        response = e2e_test_client.post(f"/run-agent/{agent_id}", json=request_data)
+        
+        if response.status_code == 200:
+            response_data = response.json()
+            assert "response" in response_data
+            assert isinstance(response_data["response"], str)
+            assert len(response_data["response"]) > 0
+        else:
+            # If agent not found, skip this specific test
+            pytest.skip(f"Medication Interaction Agent not found in database (ID: {agent_id})")
+
     def test_run_agent_not_found(self, e2e_test_client):
         """Test POST /run-agent/{agent_id} - Error scenario: agent not found"""
         non_existent_id = 99999

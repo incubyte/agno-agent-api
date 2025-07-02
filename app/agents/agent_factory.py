@@ -5,6 +5,7 @@ from app.agents.linkedin_writer_agent import LinkedInWriterAgent
 from app.agents.tech_blog_writer_agent import TechBlogWriterAgent
 from app.agents.lifestyle_blog_writer_agent import LifestyleBlogWriterAgent
 from app.agents.medication_interaction_agent import MedicationInteractionAgent
+from app.agents.sales_intelligence_agent import SalesIntelligenceAgent
 from app.agents.enum.agent_enum import AgentType
 
 
@@ -16,6 +17,7 @@ class AgentFactory:
         AgentType.TECH_BLOG_WRITER_AGENT: TechBlogWriterAgent,
         AgentType.LIFESTYLE_BLOG_WRITER_AGENT: LifestyleBlogWriterAgent,
         AgentType.MEDICATION_INTERACTION_AGENT: MedicationInteractionAgent,
+        AgentType.SALES_INTELLIGENCE_AGENT: SalesIntelligenceAgent,
     }
 
     @staticmethod
