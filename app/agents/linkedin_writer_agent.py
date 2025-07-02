@@ -2,7 +2,7 @@ from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
 from agno.tools.reasoning import ReasoningTools
 from app.agents.base_agent import BaseAgent
-from app.core import settings
+from app.core.setting import settings
 from agno.utils.pprint import pprint_run_response
 from typing import Iterator
 
