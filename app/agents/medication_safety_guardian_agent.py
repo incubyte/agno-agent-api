@@ -7,6 +7,7 @@ from agno.tools.reasoning import ReasoningTools
 from app.agents.base_agent import BaseAgent
 from app.core import settings
 from agno.utils.pprint import pprint_run_response
+from agno.models.google import Gemini
 import os
 
 
@@ -21,7 +22,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="FDA Recall Monitor Agent",
             role="You are an expert FDA drug recall monitoring specialist focused on patient safety",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=4096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Monitor and analyze FDA drug recalls with clinical precision",
                 "Identify recall severity levels and patient impact immediately",
@@ -46,7 +47,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Drug Interaction Analyzer Agent",
             role="You are a clinical pharmacology expert specializing in drug-drug interactions",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=4096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Analyze drug interactions with clinical precision and evidence-based assessment",
                 "Classify interactions by severity: Major (contraindicated), Moderate (caution), Minor (awareness)",
@@ -71,7 +72,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Therapeutic Alternative Specialist Agent",
             role="You are a clinical pharmacist expert in therapeutic alternatives and medication substitutions",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=4096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Identify safe and effective therapeutic alternatives for problematic medications",
                 "Consider bioequivalent, therapeutically equivalent, and pharmacologically similar options",
@@ -96,7 +97,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Clinical Safety Analyst Agent",
             role="You are a clinical safety expert specializing in comprehensive medication risk assessment",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=4096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Perform comprehensive clinical safety assessments for medication regimens",
                 "Evaluate patient-specific risk factors: age, organ function, comorbidities",
@@ -121,7 +122,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Patient Monitoring Specialist Agent",
             role="You are a clinical monitoring expert specializing in patient safety during medication changes",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=4096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Design comprehensive monitoring protocols for medication transitions",
                 "Establish safety benchmarks and warning indicators",
@@ -152,7 +153,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
                 self.create_clinical_safety_agent(),
                 self.create_patient_monitoring_agent()
             ],
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=12000),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "You are a team of medication safety experts who work together to ensure patient safety and optimal therapeutic outcomes.",
                 "Given patient information and medication details, conduct a comprehensive safety review.",
@@ -223,6 +224,7 @@ class MedicationSafetyGuardianAgent(BaseAgent):
 
         try:
             print(f"Running medication safety team for patient case")
+            
             print(self.medication_safety_team)
             response_stream: Iterator[RunResponse] = self.medication_safety_team.run(prompt)
             content = ""

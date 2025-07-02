@@ -8,6 +8,7 @@ class Setting(BaseSettings):
     AGENT_STORAGE: str
     DATABASE_URL: str
     ALLOWED_ORIGINS: list[str] 
+    GOOGLE_API_KEY: str
 
     class Config:
         env_file = ".env"
