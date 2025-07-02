@@ -36,7 +36,7 @@ class ClinicalDecisionAgent(BaseAgent):
                 "Flag any missing critical information needed for optimal decision-making",
             ],
             show_tool_calls=True,
-            tools=[GoogleSearchTools(), Crawl4aiTools(max_length=None)],
+            tools=[GoogleSearchTools(fixed_max_results=3), Crawl4aiTools(max_length=15000)],
             stream=True,
             markdown=True,
         )
@@ -61,7 +61,7 @@ class ClinicalDecisionAgent(BaseAgent):
                 "Provide specific dosing guidelines and administration recommendations",
             ],
             show_tool_calls=True,
-            tools=[GoogleSearchTools(), Crawl4aiTools(max_length=None)],
+            tools=[GoogleSearchTools(fixed_max_results=3), Crawl4aiTools(max_length=15000)],
             stream=True,
             markdown=True,
         )
@@ -86,7 +86,7 @@ class ClinicalDecisionAgent(BaseAgent):
                 "Include specific instructions for handling adverse events",
             ],
             show_tool_calls=True,
-            tools=[GoogleSearchTools(), Crawl4aiTools(max_length=None)],
+            tools=[GoogleSearchTools(fixed_max_results=3), Crawl4aiTools(max_length=15000)],
             stream=True,
             markdown=True,
         )
@@ -112,7 +112,7 @@ class ClinicalDecisionAgent(BaseAgent):
                 "Create templates for ongoing monitoring and follow-up documentation",
             ],
             show_tool_calls=True,
-            tools=[GoogleSearchTools(), Crawl4aiTools(max_length=None)],
+            tools=[GoogleSearchTools(fixed_max_results=3), Crawl4aiTools(max_length=15000)],
             stream=True,
             markdown=True,
         )
