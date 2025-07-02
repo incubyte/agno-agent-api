@@ -1,5 +1,6 @@
 from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
+from agno.models.google import Gemini
 from agno.tools.googlesearch import GoogleSearchTools
 from agno.tools.crawl4ai import Crawl4aiTools
 from agno.storage.sqlite import SqliteStorage
@@ -47,10 +48,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Location Specific Intelligence Medical Agent",
             role="Master location intelligence coordinator with comprehensive health analysis capabilities",
-            model=Claude(
-                id="claude-3-7-sonnet-20250219",
-                api_key=settings.ANTHROPIC_API_KEY,
-                max_tokens=12000
+            model=Gemini(
+                id="gemini-2.0-flash",
+                api_key=settings.GOOGLE_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT],
@@ -64,7 +64,7 @@ class LocationSpecificAgent(BaseAgent):
                 "Synthesize data from all sub-agent analyses into cohesive intelligence"
             ],
             tools=[
-                GoogleSearchTools(search_engine="google", num_results=10),
+                GoogleSearchTools(fixed_max_results=10),
                 Crawl4aiTools(max_length=8000)
             ],
             show_tool_calls=True,
@@ -78,10 +78,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Geographic Context Sub-Agent",
             role="Geographic health intelligence specialist with real-time search capabilities",
-            model=Claude(
-                id="claude-3-7-sonnet-20250219",
-                api_key=settings.ANTHROPIC_API_KEY,
-                max_tokens=4096
+            model=Gemini(
+                id="gemini-2.0-flash",
+                api_key=settings.GOOGLE_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.GEOGRAPHIC_CONTEXT_AGENT],
@@ -92,7 +91,7 @@ class LocationSpecificAgent(BaseAgent):
                 "Provide structured geographic context for health analysis"
             ],
             tools=[
-                GoogleSearchTools(search_engine="google", num_results=5),
+                GoogleSearchTools(fixed_max_results=5),
                 Crawl4aiTools(max_length=5000)
             ],
             show_tool_calls=True,
@@ -105,10 +104,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Epidemiological Intelligence Sub-Agent", 
             role="Epidemiological intelligence analyst with real-time monitoring capabilities",
-            model=Claude(
-                id="claude-3-7-sonnet-20250219",
-                api_key=settings.ANTHROPIC_API_KEY,
-                max_tokens=6096
+            model=Gemini(
+                id="gemini-2.0-flash",
+                api_key=settings.GOOGLE_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.EPIDEMIOLOGICAL_INTELLIGENCE_AGENT],
@@ -119,7 +117,7 @@ class LocationSpecificAgent(BaseAgent):
                 "Provide structured epidemiological intelligence data"
             ],
             tools=[
-                GoogleSearchTools(search_engine="google", num_results=10),
+                GoogleSearchTools(fixed_max_results=10),
                 Crawl4aiTools(max_length=8000)
             ],
             show_tool_calls=True,
@@ -132,10 +130,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Healthcare Resource Mapping Sub-Agent",
             role="Healthcare resource specialist with real-time facility monitoring capabilities",
-            model=Claude(
-                id="claude-3-7-sonnet-20250219",
-                api_key=settings.ANTHROPIC_API_KEY,
-                max_tokens=6096
+            model=Gemini(
+                id="gemini-2.0-flash",
+                api_key=settings.GOOGLE_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.HEALTHCARE_RESOURCE_MAPPING_AGENT],
@@ -146,7 +143,7 @@ class LocationSpecificAgent(BaseAgent):
                 "Provide structured healthcare resource mapping data"
             ],
             tools=[
-                GoogleSearchTools(search_engine="google", num_results=12),
+                GoogleSearchTools(fixed_max_results=12),
                 Crawl4aiTools(max_length=6000)
             ],
             show_tool_calls=True,
@@ -159,10 +156,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Risk Assessment & Alert Sub-Agent",
             role="Public health risk assessment specialist with real-time advisory monitoring capabilities",
-            model=Claude(
-                id="claude-3-7-sonnet-20250219",
-                api_key=settings.ANTHROPIC_API_KEY,
-                max_tokens=8096
+            model=Gemini(
+                id="gemini-2.0-flash",
+                api_key=settings.GOOGLE_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.RISK_ASSESSMENT_ALERT_AGENT],
@@ -173,7 +169,7 @@ class LocationSpecificAgent(BaseAgent):
                 "Provide structured risk assessment and alert data"
             ],
             tools=[
-                GoogleSearchTools(search_engine="google", num_results=8),
+                GoogleSearchTools(fixed_max_results=8),
                 Crawl4aiTools(max_length=6000)
             ],
             show_tool_calls=True,
