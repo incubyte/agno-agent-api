@@ -9,7 +9,7 @@ import asyncio
 import sys
 import signal
 import os
-from app.core import settings
+from app.core.setting import settings
 
 # Handle Windows event loop policy for Playwright/Crawl4AI compatibility
 if sys.platform == "win32":

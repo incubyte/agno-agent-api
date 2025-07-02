@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # Main API service
@@ -26,7 +26,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - SENDER_EMAIL=${SENDER_EMAIL}
       - SENDER_PASSWORD=${SENDER_PASSWORD}
-      
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+
       # CORS configuration
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-["http://localhost:3000","http://localhost:5173"]}
       
