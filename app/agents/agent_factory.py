@@ -5,6 +5,7 @@ from app.agents.linkedin_writer_agent import LinkedInWriterAgent
 from app.agents.medication_safety_guardian_agent import MedicationSafetyGuardianAgent
 from app.agents.tech_blog_writer_agent import TechBlogWriterAgent
 from app.agents.lifestyle_blog_writer_agent import LifestyleBlogWriterAgent
+from app.agents.clinical_decision_agents import ClinicalDecisionAgent
 from app.agents.enum.agent_enum import AgentType
 
 
@@ -16,6 +17,7 @@ class AgentFactory:
         AgentType.TECH_BLOG_WRITER_AGENT: TechBlogWriterAgent,
         AgentType.LIFESTYLE_BLOG_WRITER_AGENT: LifestyleBlogWriterAgent,
         AgentType.MEDICATION_SAFETY_GUARDIAN: MedicationSafetyGuardianAgent,
+        AgentType.CLINICAL_DECISION_AGENT: ClinicalDecisionAgent,
     }
 
     @staticmethod
