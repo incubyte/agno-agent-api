@@ -170,5 +170,14 @@ agent_prompt_repository = {
     - Ensure recommendations are actionable and appropriate for target audience
     - Flag conflicting information from different sources for manual review
     """,
+    AgentType.MEDICATION_SAFETY_GUARDIAN: """ PATIENT CASE: 
+            Demographics: 65-year-old female, 70kg
+            Medical History: Type 2 diabetes, hypertension, penicillin allergy
+            Current Medications: 
+            - Metformin 1000mg twice daily
+            - Lisinopril 10mg once daily
+            Clinical Question: Is it safe to add atorvastatin 20mg daily for this patient?
+            Urgency Level: Routine check
+                                                """,
     AgentType.CLINICAL_DECISION_AGENT: "You are a clinical decision support agent. Your task is to analyze patient data and provide evidence-based treatment recommendations with comprehensive safety monitoring protocols.",
 }

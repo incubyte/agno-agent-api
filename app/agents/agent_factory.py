@@ -1,6 +1,7 @@
 from app.agents.base_agent import BaseAgent
 from app.agents.ai_agent import AIAgent
 from app.agents.linkedin_writer_agent import LinkedInWriterAgent
+from app.agents.medication_safety_guardian_agent import MedicationSafetyGuardianAgent
 from app.agents.tech_blog_writer_agent import TechBlogWriterAgent
 from app.agents.lifestyle_blog_writer_agent import LifestyleBlogWriterAgent
 from app.agents.Location_Specific_Agent import LocationSpecificAgent
@@ -15,6 +16,7 @@ class AgentFactory:
         AgentType.TECH_BLOG_WRITER_AGENT: TechBlogWriterAgent,
         AgentType.LIFESTYLE_BLOG_WRITER_AGENT: LifestyleBlogWriterAgent,
         AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT: LocationSpecificAgent,
+        AgentType.MEDICATION_SAFETY_GUARDIAN: MedicationSafetyGuardianAgent,
         AgentType.CLINICAL_DECISION_AGENT: ClinicalDecisionAgent,
     }
 
