@@ -170,4 +170,5 @@ agent_prompt_repository = {
     - Ensure recommendations are actionable and appropriate for target audience
     - Flag conflicting information from different sources for manual review
     """
+    AgentType.CLINICAL_DECISION_AGENT: "You are a clinical decision support agent. Your task is to analyze patient data and provide evidence-based treatment recommendations with comprehensive safety monitoring protocols.",
 }
