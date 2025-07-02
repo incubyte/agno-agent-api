@@ -66,6 +66,18 @@ def seed_test_database(engine):
                     description="General purpose AI assistant for various tasks",
                     image="ai-agent.png"
                 ),
+                Agent(
+                    name="Sales Intelligence Agent",
+                    slug="lead-enrichment",  # Matches AgentType.SALES_INTELLIGENCE_AGENT
+                    description="Empower your BDRs with precise prospect and company insights. This agent rapidly extracts critical data from LinkedIn profiles and websites, fueling smarter outreach.",
+                    image="sales-intelligence.svg"
+                ),
+                Agent(
+                    name="Medication Interaction Agent",
+                    slug="medication-interaction",  # Matches AgentType.MEDICATION_INTERACTION_AGENT
+                    description="Analyze drug combinations for safety and provide comprehensive interaction assessments with actionable clinical recommendations.",
+                    image="medication-safety.svg"
+                ),
                 
                 # Edge case agents for testing various scenarios (these will cause prompt errors but are useful for other tests)
                 Agent(
@@ -98,7 +110,7 @@ def seed_test_database(engine):
             agent_count = session.execute(text("SELECT COUNT(*) FROM agents")).fetchone()[0]
             print(f"Successfully seeded {agent_count} agents to test database")
             
-            return len(sample_agents)  # Returns 8 agents total
+            return len(sample_agents)  # Returns 10 agents total
             
     except ImportError as e:
         print(f"Could not import models: {e}")
@@ -145,13 +157,15 @@ def get_seeded_data_info():
             {"slug": "linkedin-writer-agent", "name": "LinkedIn Writer Agent"},
             {"slug": "lifestyle-blog-writer-agent", "name": "Lifestyle Blog Writer Agent"},
             {"slug": "ai-agent", "name": "AI Agent"},
+            {"slug": "lead-enrichment", "name": "Sales Intelligence Agent"},
+            {"slug": "medication-interaction", "name": "Medication Interaction Agent"},
         ],
         "edge_case_agents": [
             {"slug": "test-long-name-agent", "name": "Test Agent with Long Name for Boundary Testing"},
             {"slug": "special-chars-agent", "name": "Special-Chars-Agent!@#"},
             {"slug": "minimal", "name": "Minimal Agent"},
         ],
-        "total_count": 8,
+        "total_count": 10,
         "test_scenarios": {
             "success_cases": ["marketing-agent", "tech-blog-writer-agent", "linkedin-writer-agent"],
             "edge_cases": ["test-long-name-agent", "special-chars-agent", "minimal"],
