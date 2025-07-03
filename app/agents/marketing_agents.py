@@ -21,7 +21,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Website Analyzer Agent",
             role="You are an expert at analyzing website structure, performance, and technical SEO elements",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze technical aspects of websites including performance, structure, and technical SEO elements",
                 "Check loading speed and performance metrics",
@@ -45,7 +45,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="SEO Keyword Agent",
             role="You are an expert at optimizing website content for search engines and keyword relevance",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Extract the current primary and secondary keywords being targeted",
                 "Analyze keyword density, placement, and relevance in content",
@@ -68,7 +68,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Offer Analysis Agent",
             role="You are an expert at analyzing and improving product/service offers on websites",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze existing offers on the website based on Alex Hormozi's $100M Offers framework",
                 "Identify the core value proposition and evaluate its clarity and appeal",
@@ -100,7 +100,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Audience Analysis Agent",
             role="You are an expert at identifying target audiences and their needs from website content",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze the website to identify the target audience segments",
                 "Evaluate how well the website demonstrates understanding of customer needs and pain points",
@@ -126,7 +126,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Copywriting Agent",
             role="You are an expert copywriter specializing in clear, emotional, and compelling marketing messages",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze the current copywriting and messaging on the website",
                 "Don't just make recommendations - create complete new copy for all major website sections",
@@ -154,7 +154,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Copy Variation Agent",
             role="You are an expert at creating multiple distinct but effective copy variations for websites",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Take the initial new copy created by the Copywriting Agent and create 2 distinct variations",
                 "VARIATION 2 should use a more technical, feature-focused approach for technically savvy audiences",
@@ -178,7 +178,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Conversion Pathway Agent",
             role="You are an expert at optimizing user journeys and conversion paths on websites",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Map the current user journey from entry to conversion point",
                 "Identify friction points where copy or design may cause users to hesitate or abandon",
@@ -202,7 +202,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Distribution Strategy Agent",
             role="You are an expert at analyzing and improving traffic generation and visibility strategies",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze the website's current distribution and traffic generation strategies",
                 "Evaluate social media integration, SEO setup, content shareability, and traffic sources",
@@ -228,7 +228,7 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Testing & Iteration Agent",
             role="You are an expert at developing testing strategies for marketing websites",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze the website for existing testing capabilities and data collection",
                 "Identify key elements that should be tested (headlines, offers, CTAs, etc.)",
@@ -252,7 +252,10 @@ class MarketingAgent(BaseAgent):
         return Agent(
             name="Product Manager Agent",
             role="You are an expert product manager who can analyze and improve product offerings",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Analyze all the aspects of the generated report and create a list of todos",
                 "Create a markdown todo list for a set of developers",
@@ -285,7 +288,7 @@ class MarketingAgent(BaseAgent):
                 self.create_testing_agent(),
                 self.create_product_manager_agent()
             ],
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=12000),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=12000),
             instructions=[
                 "You are a team of marketing experts who work together to analyze and optimize websites.",
                 "Given a website URL, conduct a comprehensive review focused on marketing effectiveness.",

@@ -1,5 +1,5 @@
 import markdown
-from weasyprint import HTML,CSS
+
 import os
 
 
@@ -16,7 +16,8 @@ class PdfService:
 
         base_dir = os.path.dirname(os.path.abspath(__file__)) 
         css_path = os.path.join(base_dir, '..', 'static', 'css', 'styles.css')
-        HTML(string=self.html_content).write_pdf("pdf/output.pdf", stylesheets=[CSS(css_path)])
+        #HTML(string=self.html_content).write_pdf("pdf/output.pdf", stylesheets=[CSS(css_path)])
+        return self.html_content
 
 
 

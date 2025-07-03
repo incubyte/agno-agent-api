@@ -4,7 +4,8 @@ Medication Interaction Agent - Fixed Implementation for Gemini
 
 from typing import Iterator
 from agno.agent import Agent, RunResponse
-from agno.models.google import Gemini
+from agno.models.anthropic import Claude
+# from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.reasoning import ReasoningTools
 from app.agents.base_agent import BaseAgent
@@ -39,7 +40,10 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Drug Parser & Standardization Agent",
             role="You are a pharmaceutical data specialist with search capabilities for drug identification",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Parse, standardize, and validate medication inputs",
                 "Standardize drug names to generic names when possible",
@@ -65,7 +69,10 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Interaction Detection & Risk Assessment Agent",
             role="You are a clinical pharmacologist specializing in drug interaction analysis",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Analyze drug combinations for potential interactions",
                 "Assess interaction severity: contraindicated, major, moderate, minor, or none",
@@ -89,7 +96,10 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Patient Context & Personalization Agent", 
             role="You are a clinical pharmacist specializing in personalized medication therapy",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Apply patient-specific factors to modify drug interaction risks",
                 "Consider age, weight, and gender considerations",
@@ -111,7 +121,10 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Alert Generation & Recommendation Agent",
             role="You are a clinical communication specialist creating medication safety alerts",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Generate actionable medication safety alerts with appropriate urgency",
                 "Suggest specific alternative medications when interactions are problematic",
@@ -138,7 +151,10 @@ class MedicationInteractionAgent(BaseAgent):
                 self.create_patient_context_agent(),
                 self.create_alert_generator_agent()
             ],
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "You are a comprehensive medication interaction analysis team.",
                 "Work together to analyze drug combinations for safety.",

@@ -7,7 +7,7 @@ from agno.tools.reasoning import ReasoningTools
 from app.agents.base_agent import BaseAgent
 from app.core import settings
 from agno.utils.pprint import pprint_run_response
-from agno.models.google import Gemini
+# from agno.models.google import Gemini
 import os
 
 
@@ -22,7 +22,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="FDA Recall Monitor Agent",
             role="You are an expert FDA drug recall monitoring specialist focused on patient safety",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Monitor and analyze FDA drug recalls with clinical precision",
                 "Identify recall severity levels and patient impact immediately",
@@ -47,7 +50,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Drug Interaction Analyzer Agent",
             role="You are a clinical pharmacology expert specializing in drug-drug interactions",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Analyze drug interactions with clinical precision and evidence-based assessment",
                 "Classify interactions by severity: Major (contraindicated), Moderate (caution), Minor (awareness)",
@@ -72,7 +78,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Therapeutic Alternative Specialist Agent",
             role="You are a clinical pharmacist expert in therapeutic alternatives and medication substitutions",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Identify safe and effective therapeutic alternatives for problematic medications",
                 "Consider bioequivalent, therapeutically equivalent, and pharmacologically similar options",
@@ -97,7 +106,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Clinical Safety Analyst Agent",
             role="You are a clinical safety expert specializing in comprehensive medication risk assessment",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Perform comprehensive clinical safety assessments for medication regimens",
                 "Evaluate patient-specific risk factors: age, organ function, comorbidities",
@@ -122,7 +134,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
         return Agent(
             name="Patient Monitoring Specialist Agent",
             role="You are a clinical monitoring expert specializing in patient safety during medication changes",
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Design comprehensive monitoring protocols for medication transitions",
                 "Establish safety benchmarks and warning indicators",
@@ -153,7 +168,10 @@ class MedicationSafetyGuardianAgent(BaseAgent):
                 self.create_clinical_safety_agent(),
                 self.create_patient_monitoring_agent()
             ],
-            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "You are a team of medication safety experts who work together to ensure patient safety and optimal therapeutic outcomes.",
                 "Given patient information and medication details, conduct a comprehensive safety review.",

@@ -16,7 +16,10 @@ class LifestyleBlogWriterAgent(BaseAgent):
         return Agent(
             name="Lifestyle Blog Writer",
             role="You are an expert lifestyle blog writer specializing in wellness, personal development, and lifestyle content",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=6144),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Create engaging, relatable lifestyle blog posts that inspire and provide practical value",
                 "Use storytelling techniques to connect emotionally with readers",

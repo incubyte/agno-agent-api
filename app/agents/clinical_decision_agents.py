@@ -20,7 +20,10 @@ class ClinicalDecisionAgent(BaseAgent):
         return Agent(
             name="Patient Assessment Agent",
             role="You are an expert at analyzing comprehensive patient data for clinical decision-making",
-            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Analyze patient demographics, medical history, current medications, and laboratory values",
                 "Identify contraindications, drug allergies, and potential drug interactions",
@@ -45,7 +48,10 @@ class ClinicalDecisionAgent(BaseAgent):
         return Agent(
             name="Treatment Comparison Agent",
             role="You are an expert at comparing therapeutic alternatives using evidence-based medicine",
-            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Compare multiple therapeutic alternatives for efficacy, safety, and tolerability",
                 "Analyze clinical trial data, meta-analyses, and real-world evidence",
@@ -70,7 +76,10 @@ class ClinicalDecisionAgent(BaseAgent):
         return Agent(
             name="Safety Monitoring Agent",
             role="You are an expert at developing comprehensive safety monitoring protocols for clinical treatments",
-            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Screen for medication-specific contraindications and precautions",
                 "Identify required pre-treatment assessments and baseline measurements",
@@ -95,7 +104,10 @@ class ClinicalDecisionAgent(BaseAgent):
         return Agent(
             name="Clinical Documentation Agent",
             role="You are an expert at creating comprehensive clinical documentation and decision support materials",
-            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "Generate primary treatment recommendations with detailed clinical rationale",
                 "Create comprehensive medical record documentation ready for clinical use",
@@ -126,7 +138,10 @@ class ClinicalDecisionAgent(BaseAgent):
                 self.create_safety_monitoring_agent(),
                 self.create_clinical_documentation_agent()
             ],
-            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
+            ),
             instructions=[
                 "You are a team of clinical experts who work together to provide comprehensive clinical decision support.",
                 "Given patient information and clinical questions, conduct a thorough analysis to recommend optimal treatment choices.",

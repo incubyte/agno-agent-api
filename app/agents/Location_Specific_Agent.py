@@ -1,6 +1,6 @@
 from agno.agent import Agent, RunResponse
 from agno.models.anthropic import Claude
-from agno.models.google import Gemini
+# from agno.models.google import Gemini
 from agno.tools.googlesearch import GoogleSearchTools
 from agno.tools.crawl4ai import Crawl4aiTools
 from agno.storage.sqlite import SqliteStorage
@@ -48,9 +48,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Location Specific Intelligence Medical Agent",
             role="Master location intelligence coordinator with comprehensive health analysis capabilities",
-            model=Gemini(
-                id="gemini-2.0-flash",
-                api_key=settings.GOOGLE_API_KEY,
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT],
@@ -78,9 +78,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Geographic Context Sub-Agent",
             role="Geographic health intelligence specialist with real-time search capabilities",
-            model=Gemini(
-                id="gemini-2.0-flash",
-                api_key=settings.GOOGLE_API_KEY,
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.GEOGRAPHIC_CONTEXT_AGENT],
@@ -104,9 +104,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Epidemiological Intelligence Sub-Agent", 
             role="Epidemiological intelligence analyst with real-time monitoring capabilities",
-            model=Gemini(
-                id="gemini-2.0-flash",
-                api_key=settings.GOOGLE_API_KEY,
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.EPIDEMIOLOGICAL_INTELLIGENCE_AGENT],
@@ -130,9 +130,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Healthcare Resource Mapping Sub-Agent",
             role="Healthcare resource specialist with real-time facility monitoring capabilities",
-            model=Gemini(
-                id="gemini-2.0-flash",
-                api_key=settings.GOOGLE_API_KEY,
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.HEALTHCARE_RESOURCE_MAPPING_AGENT],
@@ -156,9 +156,9 @@ class LocationSpecificAgent(BaseAgent):
         return Agent(
             name="Risk Assessment & Alert Sub-Agent",
             role="Public health risk assessment specialist with real-time advisory monitoring capabilities",
-            model=Gemini(
-                id="gemini-2.0-flash",
-                api_key=settings.GOOGLE_API_KEY,
+            model=Claude(
+                id="claude-3-5-sonnet-latest",
+                api_key=settings.ANTHROPIC_API_KEY,
             ),
             instructions=[
                 agent_prompt_repository[AgentType.RISK_ASSESSMENT_ALERT_AGENT],
