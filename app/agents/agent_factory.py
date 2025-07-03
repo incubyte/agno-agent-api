@@ -6,6 +6,7 @@ from app.agents.tech_blog_writer_agent import TechBlogWriterAgent
 from app.agents.lifestyle_blog_writer_agent import LifestyleBlogWriterAgent
 from app.agents.Location_Specific_Agent import LocationSpecificAgent
 from app.agents.clinical_decision_agents import ClinicalDecisionAgent
+from app.agents.medication_interaction_agent import MedicationInteractionAgent
 from app.agents.enum.agent_enum import AgentType
 
 
@@ -18,6 +19,7 @@ class AgentFactory:
         AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT: LocationSpecificAgent,
         AgentType.MEDICATION_SAFETY_GUARDIAN: MedicationSafetyGuardianAgent,
         AgentType.CLINICAL_DECISION_AGENT: ClinicalDecisionAgent,
+        AgentType.MEDICATION_INTERACTION_AGENT: MedicationInteractionAgent,
     }
 
     @staticmethod
