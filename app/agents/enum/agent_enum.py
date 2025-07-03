@@ -17,7 +17,7 @@ class AgentType(Enum):
     DRUG_SAFETY_MONITOR_AGENT = "drug-safety-monitor"
     MEDICATION_SAFETY_GUARDIAN = "patient-medication"
     MEDICATION_INTERACTION_MONITOR_AGENT = "drug-interaction-assessment"
-    MEDICATION_INTERACTION_AGENT = "medication-interaction"
+    MEDICATION_INTERACTION_AGENT = "drug-interaction-assessment"
     LOCATION_HEALTH_INTELLIGENCE_AGENT = "geo-health-alerts"
     CLINICAL_DECISION_AGENT = "safety-insights"
     
