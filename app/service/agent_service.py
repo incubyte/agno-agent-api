@@ -3,8 +3,9 @@ Agent Service - Business logic layer for agent operations
 This service handles the business logic and coordinates between the route layer and repository layer.
 """
 from typing import List, Optional
-from app.db.models import Agent
+from app.db.models import Agent, UserAgentRun
 from app.db.repository.agent_repository import AgentRepository
+from app.service.user_agent_run_service import UserAgentRunService
 from app.agents.agent_factory import AgentFactory
 import textwrap
 from fastapi import HTTPException
@@ -19,7 +20,8 @@ class AgentService:
     
     def __init__(self):
         self.agent_repository = AgentRepository()
-    
+        self.user_agent_run_service = UserAgentRunService()
+
     def get_all_agents(self) -> List[Agent]:
         """Get all agents from the repository"""
         try:
@@ -57,12 +59,15 @@ class AgentService:
         created_agent = self.agent_repository.create(agent)
         return created_agent
 
-    def run_agent_by_id(self, agent_id: int, prompt: str, user_email: Optional[str]) -> str:
+    def run_agent_by_id(self, agent_id: int, prompt: str, user_email: str) -> str:
         """Run an agent by ID with the given prompt"""
         
             # Validate inputs
         if not prompt:
             raise ValueError("Prompt must not be empty")
+        
+        if not user_email:
+            raise ValueError("User email must not be empty")
             
             # Get agent data from repository
         agent = self.get_agent_by_id(agent_id)
@@ -71,6 +76,9 @@ class AgentService:
         agent = AgentFactory.get_agent(AgentType(agent.slug))
 
             # Generate response
+
+
+        user_agent_run = self.save_user_agent_run(user_email, agent_id)
         response = agent.get_response(prompt)
             
             # Clean up response
@@ -120,3 +128,10 @@ class AgentService:
             return self.agent_repository.agent_count()
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Failed to get agent count: {str(e)}")
+
+    def save_user_agent_run(self, email: str, agent_id: int) -> Optional[UserAgentRun]:
+        """Save a user agent run"""
+        try:
+            return self.user_agent_run_service.create(email, agent_id)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to save user agent run: {str(e)}")
