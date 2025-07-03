@@ -1,18 +1,15 @@
 """
-Medication Interaction Agent - Complete Implementation
+Medication Interaction Agent - Fixed Implementation for Gemini
 """
 
-from typing import Iterator, Dict, Any, List, Optional
+from typing import Iterator
 from agno.agent import Agent, RunResponse
-from agno.models.anthropic import Claude
+from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.reasoning import ReasoningTools
 from app.agents.base_agent import BaseAgent
 from app.core import settings
 from app.tools.duckduckgo_search import FreeDrugSearchTool
-from agno.utils.pprint import pprint_run_response
-import json
-import re
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -42,7 +39,7 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Drug Parser & Standardization Agent",
             role="You are a pharmaceutical data specialist with search capabilities for drug identification",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Parse, standardize, and validate medication inputs",
                 "Standardize drug names to generic names when possible",
@@ -52,6 +49,11 @@ class MedicationInteractionAgent(BaseAgent):
                 "Always indicate confidence level and whether manual review is needed",
                 "Flag unknown substances for further investigation",
                 "Consider drug synonyms, brand names, and international names",
+                "",
+                "IMPORTANT: When using reasoning tools, follow these exact formats:",
+                "For analyze(): analyze(title='Analysis Title', result='The actual outcome or finding', analysis='Your analysis of the result', next_action='continue', confidence=0.8)",
+                "The 'result' parameter in analyze() is REQUIRED and must contain the actual finding or outcome.",
+                "Example: analyze(title='Drug Parsing Complete', result='Successfully identified 3 medications: warfarin, amiodarone, metoprolol', analysis='All drugs validated with high confidence', next_action='continue', confidence=0.9)",
             ],
             show_tool_calls=True,
             tools=[ReasoningTools()],
@@ -63,7 +65,7 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Interaction Detection & Risk Assessment Agent",
             role="You are a clinical pharmacologist specializing in drug interaction analysis",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Analyze drug combinations for potential interactions",
                 "Assess interaction severity: contraindicated, major, moderate, minor, or none",
@@ -72,6 +74,10 @@ class MedicationInteractionAgent(BaseAgent):
                 "Determine onset timing and monitoring requirements",
                 "Provide clear clinical explanations for each interaction",
                 "Include contraindications and special warnings",
+                "",
+                "CRITICAL: Always include the 'result' parameter when using analyze():",
+                "analyze(title='Interaction Assessment', result='Found major interaction between warfarin and amiodarone', analysis='CYP3A4 inhibition increases bleeding risk', next_action='continue', confidence=0.9)",
+                "The result parameter must contain your specific findings, not just analysis.",
             ],
             show_tool_calls=True,
             tools=[ReasoningTools()],
@@ -83,7 +89,7 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Patient Context & Personalization Agent", 
             role="You are a clinical pharmacist specializing in personalized medication therapy",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Apply patient-specific factors to modify drug interaction risks",
                 "Consider age, weight, and gender considerations",
@@ -91,6 +97,9 @@ class MedicationInteractionAgent(BaseAgent):
                 "Consider comorbidities and their impact on drug safety",
                 "Apply age-specific considerations (pediatric, geriatric)",
                 "Recommend additional monitoring based on patient profile",
+                "",
+                "MANDATORY: When using analyze(), always provide the 'result' parameter:",
+                "Format: analyze(title='Patient Risk Assessment', result='Elderly patient with CKD increases bleeding risk by 40%', analysis='Requires dose reduction due to age and kidney function', next_action='continue', confidence=0.8)",
             ],
             show_tool_calls=True,
             tools=[ReasoningTools()],
@@ -102,7 +111,7 @@ class MedicationInteractionAgent(BaseAgent):
         return Agent(
             name="Alert Generation & Recommendation Agent",
             role="You are a clinical communication specialist creating medication safety alerts",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "Generate actionable medication safety alerts with appropriate urgency",
                 "Suggest specific alternative medications when interactions are problematic",
@@ -110,6 +119,9 @@ class MedicationInteractionAgent(BaseAgent):
                 "Use appropriate alert levels: CRITICAL, WARNING, CAUTION, INFORMATION",
                 "Include clear explanations of WHY interactions matter clinically",
                 "Provide specific, actionable next steps for each alert level",
+                "",
+                "ESSENTIAL: Always include 'result' parameter in analyze() calls:",
+                "Example: analyze(title='Alert Generation', result='Created CRITICAL alert for warfarin-amiodarone interaction with dose reduction recommendations', analysis='Alert clearly communicates immediate actions needed', next_action='final_answer', confidence=0.95)",
             ],
             show_tool_calls=True,
             tools=[ReasoningTools()],
@@ -126,7 +138,7 @@ class MedicationInteractionAgent(BaseAgent):
                 self.create_patient_context_agent(),
                 self.create_alert_generator_agent()
             ],
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=12000),
+            model=Gemini(id="gemini-2.0-flash", api_key=settings.GOOGLE_API_KEY),
             instructions=[
                 "You are a comprehensive medication interaction analysis team.",
                 "Work together to analyze drug combinations for safety.",
@@ -135,6 +147,17 @@ class MedicationInteractionAgent(BaseAgent):
                 "2. Interaction Detector: Analyze drug pairs for interactions",
                 "3. Patient Context: Apply patient-specific factors",
                 "4. Alert Generator: Create appropriate alerts and recommendations",
+                "",
+                "CRITICAL GEMINI GUIDANCE FOR REASONING TOOLS:",
+                "When ANY team member uses the analyze() function, you MUST include ALL required parameters:",
+                "- title: A descriptive title for the analysis step",
+                "- result: The ACTUAL outcome, finding, or data from your work (REQUIRED)",
+                "- analysis: Your interpretation or evaluation of the result",
+                "- next_action: Either 'continue', 'validate', or 'final_answer'",
+                "- confidence: A number between 0.0 and 1.0",
+                "",
+                "WRONG: analyze(title='Drug Analysis', analysis='Found interactions', next_action='continue')",
+                "CORRECT: analyze(title='Drug Analysis', result='Identified 2 major interactions: warfarin-amiodarone and simvastatin-gemfibrozil', analysis='Both require immediate attention and dose adjustments', next_action='continue', confidence=0.9)",
                 "",
                 "Safety Priorities:",
                 "- Patient safety is the absolute top priority",
@@ -166,7 +189,7 @@ class MedicationInteractionAgent(BaseAgent):
         # Enhance with search results if needed
         enhanced_info = self._enhance_with_search(prompt)
         
-        # Create comprehensive prompt
+        # Create comprehensive prompt with specific Gemini guidance
         analysis_prompt = f"""
         Please conduct a comprehensive medication interaction analysis.
         
@@ -175,6 +198,11 @@ class MedicationInteractionAgent(BaseAgent):
         
         ENHANCED INFORMATION FROM SEARCH:
         {enhanced_info}
+        
+        IMPORTANT FOR GEMINI: When using reasoning tools, remember:
+        - analyze() function requires: title, result, analysis, next_action, confidence
+        - The 'result' parameter is MANDATORY and must contain your actual findings
+        - Example: analyze(title="Interaction Found", result="Major warfarin-amiodarone interaction detected", analysis="Requires 30-50% dose reduction", next_action="continue", confidence=0.9)
         
         Please provide:
         1. Drug identification and standardization
