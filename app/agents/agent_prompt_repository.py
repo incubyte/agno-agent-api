@@ -8,51 +8,10 @@ agent_prompt_repository = {
     AgentType.LIFESTYLE_BLOG_WRITER_AGENT: "You are a lifestyle blog writer. Your task is to create engaging, relatable lifestyle content that inspires and provides practical value for personal growth and well-being.",
     
     # Location Intelligence Medical Agent - Consolidated
-    AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT: """
-    You are the master coordinator for location-specific medical intelligence with real-time search capabilities.
-    
-    Your primary role is to orchestrate comprehensive location-based health analysis through four specialized capabilities:
-    1. Geographic Context Analysis - Process locations and health jurisdictions
-    2. Epidemiological Intelligence - Monitor outbreaks and disease patterns
-    3. Healthcare Resource Mapping - Map facilities and assess capacity
-    4. Risk Assessment & Alert Generation - Synthesize data into actionable recommendations
-    
-    Core Responsibilities:
-    - Coordinate geographic, epidemiological, healthcare resource, and risk assessment analysis
-    - Use search tools to gather real-time health data and outbreak information
-    - Generate comprehensive location-intelligent health recommendations
-    - Provide actionable alerts for healthcare providers and patients
-    - Ensure all recommendations are evidence-based and location-specific
-    - Include emergency preparedness and response protocols
-    
-    Workflow Process:
-    1. Receive location input and health context
-    2. Process geographic context (coordinates, jurisdictions, demographics)
-    3. Monitor epidemiological intelligence (outbreaks, surveillance, advisories)
-    4. Map healthcare resources (facilities, capacity, accessibility)
-    5. Assess risks and generate alerts (recommendations, emergency contacts)
-    6. Synthesize comprehensive health intelligence report
-    
-    Search Coordination:
-    - Prioritize searches based on health urgency and outbreak status
-    - Use real-time data from CDC, WHO, and local health authorities
-    - Validate information across multiple sources
-    - Handle search failures gracefully with fallback data sources
-    
-    Quality Standards:
-    - Base all assessments on current, validated data from official health authorities
-    - Cross-reference epidemiological data across multiple sources
-    - Verify healthcare facility information with official directories
-    - Provide clear confidence levels and data freshness indicators
-    - Include appropriate disclaimers about data limitations
-    - Generate actionable, specific recommendations for target audiences
-    
-    Output Format:
-    - Comprehensive markdown reports with clear sections
-    - Executive summaries with immediate actions
-    - Structured data with emergency contacts
-    - Risk assessments with clear escalation criteria
-    - Evidence-based recommendations with source attribution
+    AgentType.LOCATION_HEALTH_INTELLIGENCE_AGENT: """Location: Mumbai, India
+Patient: 70-year-old with heart disease and diabetes
+Concerns: Disease outbreaks, emergency facilities, health risks
+Urgency: Urgent
     """,
     
     # Sub-Agent Prompts for Internal Use (used within Location_Specific_Agent.py)
@@ -179,6 +138,28 @@ agent_prompt_repository = {
             Clinical Question: Is it safe to add atorvastatin 20mg daily for this patient?
             Urgency Level: Routine check
                                                 """,
-    AgentType.CLINICAL_DECISION_AGENT: "You are a clinical decision support agent. Your task is to analyze patient data and provide evidence-based treatment recommendations with comprehensive safety monitoring protocols.",
-    AgentType.MEDICATION_INTERACTION_AGENT: "You are a medication interaction specialist. Analyze drug combinations for safety, provide interaction assessments, and generate actionable clinical recommendations. Always prioritize patient safety and provide evidence-based guidance.",
+    AgentType.CLINICAL_DECISION_AGENT: """ 65-year-old male, weight 220 lbs, BMI 32. Type 2 diabetes diagnosed 2 years ago.
+
+Current: Metformin 2000mg daily, HbA1c 8.9%
+History: No cardiovascular disease, normal kidney function (eGFR 78)
+Allergies: None known
+Insurance: Medicare with Part D
+
+Clinical question: Need second diabetes medication. Patient prefers once-daily dosing, concerned about weight gain and low blood sugar. What's the best evidence-based option?
+""",
+    AgentType.MEDICATION_INTERACTION_AGENT: """A 74-year-old Male takes several medications and recently started new supplements. I'm worried about interactions.
+
+Prescription medications:
+- Digoxin 0.25mg daily (heart failure)
+- Furosemide 80mg twice daily (water pill)
+- Metformin 1000mg twice daily (diabetes)
+
+New supplements he's taking:
+- Garlic pills (for cholesterol)
+- St. John's Wort (feeling down)
+- Fish oil (for heart)
+
+He's 170 lbs, has mild kidney problems, and recent labs show his digoxin level is high at 2.2. Are these supplements safe with his medications? 
+Should he stop anything before his knee surgery in 3 weeks?
+ """,
 }
