@@ -20,7 +20,7 @@ class ClinicalDecisionAgent(BaseAgent):
         return Agent(
             name="Patient Assessment Agent",
             role="You are an expert at analyzing comprehensive patient data for clinical decision-making",
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
+            model=Claude(id="claude-3-5-sonnet-latest", max_tokens=8096),
             instructions=[
                 "Analyze patient demographics, medical history, current medications, and laboratory values",
                 "Identify contraindications, drug allergies, and potential drug interactions",
@@ -126,7 +126,7 @@ class ClinicalDecisionAgent(BaseAgent):
                 self.create_safety_monitoring_agent(),
                 self.create_clinical_documentation_agent()
             ],
-            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=12000),
+            model=Claude(id="claude-3-7-sonnet-20250219", max_tokens=8096),
             instructions=[
                 "You are a team of clinical experts who work together to provide comprehensive clinical decision support.",
                 "Given patient information and clinical questions, conduct a thorough analysis to recommend optimal treatment choices.",
